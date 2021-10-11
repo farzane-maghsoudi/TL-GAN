@@ -1,6 +1,9 @@
-tensorflow
 numpy
 h5py
-opencv-python
-tensorflow-addons
-tf-slim
+Pytorch 1.1.0
+torchvision
+TensorboardX
+tensorflow
+CUDA 10.0.130
+CuDNN 7.3
+Ubuntu 16.04
