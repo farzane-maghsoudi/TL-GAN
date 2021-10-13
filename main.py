@@ -24,7 +24,7 @@ def parse_args():
     parser.add_argument('--adv_weight', type=int, default=1, help='Weight for GAN')
     parser.add_argument('--cycle_weight', type=int, default=10, help='Weight for Cycle')
     parser.add_argument('--recon_weight', type=int, default=10, help='Weight for Reconstruction')
-    parser.add_argument('--Feature_weight', type=int, default=100, help='Weight for Feature similarity')
+    parser.add_argument('--feature_weight', type=int, default=100, help='Weight for Feature similarity')
 
     parser.add_argument('--ch', type=int, default=64, help='base channel number per layer')
     parser.add_argument('--n_res', type=int, default=6, help='The number of resblock')
