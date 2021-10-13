@@ -1,6 +1,6 @@
 import time, itertools
 from dataset import ImageFolder
-from torchvision import transforms
+from torchvision import  datasets, models, transforms
 from torch.utils.data import DataLoader
 from networks import *
 from utils import *
