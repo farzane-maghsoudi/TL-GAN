@@ -36,7 +36,7 @@ class NICE(object) :
         self.adv_weight = args.adv_weight
         self.cycle_weight = args.cycle_weight
         self.recon_weight = args.recon_weight
-        self.Feature_weight = args.Feature_weight
+        self.feature_weight = args.feature_weight
 
         """ Generator """
         self.n_res = args.n_res
@@ -87,6 +87,7 @@ class NICE(object) :
         print("# adv_weight : ", self.adv_weight)
         print("# cycle_weight : ", self.cycle_weight)
         print("# recon_weight : ", self.recon_weight)
+        print("# feature_weight : ", self.feature_weight)
 
     ##################################################################################
     # Model
