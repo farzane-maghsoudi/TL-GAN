@@ -4,3 +4,4 @@ Pytorch
 torchvision
 TensorboardX
 tensorflow
+thop
