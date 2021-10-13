@@ -269,10 +269,13 @@ class NICE(object) :
 
             G_recon_loss_A = self.L1_loss(fake_A2A, real_A)
             G_recon_loss_B = self.L1_loss(fake_B2B, real_B)
+            
+            G_feature_loss_A = self.L1_loss(fake_A2A, real_A)!!!
+            G_feature_loss_B = self.L1_loss(fake_B2B, real_B)!!!
 
 
-            G_loss_A = self.adv_weight * (G_ad_loss_GA + G_ad_cam_loss_A + G_ad_loss_LA ) + self.cycle_weight * G_cycle_loss_A + self.recon_weight * G_recon_loss_A
-            G_loss_B = self.adv_weight * (G_ad_loss_GB + G_ad_cam_loss_B + G_ad_loss_LB ) + self.cycle_weight * G_cycle_loss_B + self.recon_weight * G_recon_loss_B
+            G_loss_A = self.adv_weight * (G_ad_loss_GA + G_ad_cam_loss_A + G_ad_loss_LA ) + self.cycle_weight * G_cycle_loss_A + self.recon_weight * G_recon_loss_A + self.feature_weight * G_feature_loss_A
+            G_loss_B = self.adv_weight * (G_ad_loss_GB + G_ad_cam_loss_B + G_ad_loss_LB ) + self.cycle_weight * G_cycle_loss_B + self.recon_weight * G_recon_loss_B + self.feature_weight * G_feature_loss_B
 
             Generator_loss = G_loss_A + G_loss_B
             Generator_loss.backward()
