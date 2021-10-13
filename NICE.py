@@ -268,10 +268,15 @@ class NICE(object) :
             fake_B2B = self.gen2B(real_B_z)
 
             G_recon_loss_A = self.L1_loss(fake_A2A, real_A)
-            G_recon_loss_B = self.L1_loss(fake_B2B, real_B)
-            
-            G_feature_loss_A = self.L1_loss(fake_A2A, real_A)!!!
-            G_feature_loss_B = self.L1_loss(fake_B2B, real_B)!!!
+            G_recon_loss_B = self.L1_loss(fake_B2B, real_B)		
+			
+			fake_A2B_f1 =
+			fake_A2B_f2 =
+			fake_B2A_f1 =
+			fake_B2A_f2 =
+			
+			G_feature_loss_A = self.L1_loss(fake_A2B_f1, fake_A2B_f2)
+            G_feature_loss_B = self.L1_loss(fake_B2A_f1, fake_B2A_f2)
 
 
             G_loss_A = self.adv_weight * (G_ad_loss_GA + G_ad_cam_loss_A + G_ad_loss_LA ) + self.cycle_weight * G_cycle_loss_A + self.recon_weight * G_recon_loss_A + self.feature_weight * G_feature_loss_A
