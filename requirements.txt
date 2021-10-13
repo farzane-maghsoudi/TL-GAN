@@ -1,9 +1,6 @@
 numpy
 h5py
-Pytorch 1.1.0
+Pytorch
 torchvision
 TensorboardX
 tensorflow
-CUDA 10.0.130
-CuDNN 7.3
-Ubuntu 16.04
