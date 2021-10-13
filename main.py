@@ -11,7 +11,9 @@ def parse_args():
     parser.add_argument('--light', type=str2bool, default=False, help='[NICE-GAN full version / NICE-GAN light version]')
     parser.add_argument('--dataset', type=str, default='YOUR_DATASET_NAME', help='dataset_name')
 
-    parser.add_argument('--iteration', type=int, default=300000, help='The number of training iterations')
+    parser.add_argument('--epoch', type=int, default=1, help='The number of epochs to run')
+    parser.add_argument('--iteration', type=int, default=10, help='The number of training iterations')
+    #parser.add_argument('--iteration', type=int, default=300000, help='The number of training iterations')
     parser.add_argument('--batch_size', type=int, default=1, help='The size of batch size')
     parser.add_argument('--print_freq', type=int, default=1000, help='The number of image print freq')
     parser.add_argument('--save_freq', type=int, default=100000, help='The number of model save freq')
@@ -22,6 +24,7 @@ def parse_args():
     parser.add_argument('--adv_weight', type=int, default=1, help='Weight for GAN')
     parser.add_argument('--cycle_weight', type=int, default=10, help='Weight for Cycle')
     parser.add_argument('--recon_weight', type=int, default=10, help='Weight for Reconstruction')
+    parser.add_argument('--Feature_weight', type=int, default=100, help='Weight for Feature similarity')
 
     parser.add_argument('--ch', type=int, default=64, help='base channel number per layer')
     parser.add_argument('--n_res', type=int, default=6, help='The number of resblock')
@@ -46,6 +49,7 @@ def check_args(args):
     check_folder(os.path.join(args.result_dir, args.dataset, 'img'))
     check_folder(os.path.join(args.result_dir, args.dataset, 'fakeA'))
     check_folder(os.path.join(args.result_dir, args.dataset, 'fakeB'))
+    check_folder(args.checkpoint_dir)
 
     # --epoch
     try:
