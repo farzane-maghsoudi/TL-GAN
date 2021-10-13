@@ -36,6 +36,7 @@ class NICE(object) :
         self.adv_weight = args.adv_weight
         self.cycle_weight = args.cycle_weight
         self.recon_weight = args.recon_weight
+        self.Feature_weight = args.Feature_weight
 
         """ Generator """
         self.n_res = args.n_res
