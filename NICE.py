@@ -228,8 +228,17 @@ class NICE(object) :
             D_ad_cam_loss_A = self.MSE_loss(real_A_cam_logit, torch.ones_like(real_A_cam_logit).to(self.device)) + self.MSE_loss(fake_A_cam_logit, torch.zeros_like(fake_A_cam_logit).to(self.device))
             D_ad_cam_loss_B = self.MSE_loss(real_B_cam_logit, torch.ones_like(real_B_cam_logit).to(self.device)) + self.MSE_loss(fake_B_cam_logit, torch.zeros_like(fake_B_cam_logit).to(self.device))
 
-            D_loss_A = self.adv_weight * (D_ad_loss_GA + D_ad_cam_loss_A + D_ad_loss_LA)
-            D_loss_B = self.adv_weight * (D_ad_loss_GB + D_ad_cam_loss_B + D_ad_loss_LB)
+            fake_A2B_f1 =
+	    fake_A2B_f2 =
+	    fake_B2A_f1 =
+	    fake_B2A_f2 =
+
+			
+	    D_feature_loss_A = self.L1_loss(fake_A2B_f1, fake_A2B_f2)
+            D_feature_loss_B = self.L1_loss(fake_B2A_f1, fake_B2A_f2)
+			
+	    D_loss_A = self.adv_weight * (D_ad_loss_GA + D_ad_cam_loss_A + D_ad_loss_LA) + self.feature_weight * D_feature_loss_A
+            D_loss_B = self.adv_weight * (D_ad_loss_GB + D_ad_cam_loss_B + D_ad_loss_LB) + self.feature_weight * D_feature_loss_B
 
             Discriminator_loss = D_loss_A + D_loss_B
             Discriminator_loss.backward()
@@ -269,18 +278,9 @@ class NICE(object) :
 
             G_recon_loss_A = self.L1_loss(fake_A2A, real_A)
             G_recon_loss_B = self.L1_loss(fake_B2B, real_B)		
-			
-			fake_A2B_f1 =
-			fake_A2B_f2 =
-			fake_B2A_f1 =
-			fake_B2A_f2 =
-			
-			G_feature_loss_A = self.L1_loss(fake_A2B_f1, fake_A2B_f2)
-            G_feature_loss_B = self.L1_loss(fake_B2A_f1, fake_B2A_f2)
 
-
-            G_loss_A = self.adv_weight * (G_ad_loss_GA + G_ad_cam_loss_A + G_ad_loss_LA ) + self.cycle_weight * G_cycle_loss_A + self.recon_weight * G_recon_loss_A + self.feature_weight * G_feature_loss_A
-            G_loss_B = self.adv_weight * (G_ad_loss_GB + G_ad_cam_loss_B + G_ad_loss_LB ) + self.cycle_weight * G_cycle_loss_B + self.recon_weight * G_recon_loss_B + self.feature_weight * G_feature_loss_B
+            G_loss_A = self.adv_weight * (G_ad_loss_GA + G_ad_cam_loss_A + G_ad_loss_LA ) + self.cycle_weight * G_cycle_loss_A + self.recon_weight * G_recon_loss_A 
+            G_loss_B = self.adv_weight * (G_ad_loss_GB + G_ad_cam_loss_B + G_ad_loss_LB ) + self.cycle_weight * G_cycle_loss_B + self.recon_weight * G_recon_loss_B 
 
             Generator_loss = G_loss_A + G_loss_B
             Generator_loss.backward()
