@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 from torch.nn.parameter import Parameter
-
+from torchvision import models
 
 class ResnetGenerator(nn.Module):
     def __init__(self, input_nc, output_nc, ngf=64, n_blocks=6, img_size=256, light=False):
@@ -382,4 +382,32 @@ class Discriminator(nn.Module):
         out1 = self.conv1(x1)
         
         return out0, out1, cam_logit, heatmap, z
+
+    
+class NewResnet(nn.Module):
+    def __init__(self, output_layers, *args):
+        super().__init__(*args)
+        self.output_layers = output_layers
+        #print(self.output_layers)
+        self.selected_out = OrderedDict()
+        #PRETRAINED MODEL
+        self.pretrained = models.resnet152(pretrained=True)
+        #self.pretrained = pred
+        self.fhooks = []
+        
+
+        for i,l in enumerate(list(self.pretrained._modules.keys())):
+            if i in self.output_layers:
+                self.fhooks.append(getattr(self.pretrained,l).register_forward_hook(self.forward_hook(l)))
+                #print(getattr(self.pretrained,l))
+        #self.fhooks.append(self.pretrained.layer3[0].downsample[1].register_forward_hook(self.forward_hook(1))
+
+    def forward_hook(self,layer_name):
+        def hook(module, input, output):
+            self.selected_out[layer_name] = output
+        return hook
+
+    def forward(self, x):
+        out = self.pretrained(x)
+        return self.selected_out
 
