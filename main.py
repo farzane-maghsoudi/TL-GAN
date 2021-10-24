@@ -31,7 +31,7 @@ def parse_args():
     parser.add_argument('--n_res', type=int, default=6, help='The number of resblock')
     parser.add_argument('--n_dis', type=int, default=7, help='The number of discriminator layer')
 
-    parser.add_argument('--img_size', type=int, default=256, help='The size of image')
+    parser.add_argument('--img_size', type=int, default=224, help='The size of image')
     parser.add_argument('--img_ch', type=int, default=3, help='The size of image channel')
 
     parser.add_argument('--result_dir', type=str, default='results', help='Directory name to save the results')
