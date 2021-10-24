@@ -9,14 +9,14 @@ from glob import glob
 from thop import profile
 from thop import clever_format
 
-class NICE(object) :
+class TL-GAN(object) :
     def __init__(self, args):
         self.light = args.light
 
         if self.light :
-            self.model_name = 'NICE_light'
+            self.model_name = 'TL-GAN_light'
         else :
-            self.model_name = 'NICE'
+            self.model_name = 'TL-GAN'
 
         self.result_dir = args.result_dir
         self.dataset = args.dataset
