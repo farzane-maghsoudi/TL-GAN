@@ -1,6 +1,7 @@
 from TL-GAN import TL-GAN
 import argparse
 from utils import *
+from networks import NewResnet
 
 """parsing and configuration"""
 
@@ -76,6 +77,9 @@ def main():
 
     # build graph
     gan.build_model()
+    
+    # build pretraind resnet
+	resnet_pre = NewResnet(output_layers = [0,1,2,3,4,5,6,7,8,9])
 
     if args.phase == 'train' :
         gan.train()
