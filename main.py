@@ -1,14 +1,14 @@
-from NICE import NICE
+from TL-GAN import TL-GAN
 import argparse
 from utils import *
 
 """parsing and configuration"""
 
 def parse_args():
-    desc = "Pytorch implementation of NICE-GAN"
+    desc = "Pytorch implementation of TL-GAN"
     parser = argparse.ArgumentParser(description=desc)
     parser.add_argument('--phase', type=str, default='train', help='[train / test]')
-    parser.add_argument('--light', type=str2bool, default=False, help='[NICE-GAN full version / NICE-GAN light version]')
+    parser.add_argument('--light', type=str2bool, default=False, help='[TL-GAN full version / TL-GAN light version]')
     parser.add_argument('--dataset', type=str, default='YOUR_DATASET_NAME', help='dataset_name')
 
     parser.add_argument('--epoch', type=int, default=1, help='The number of epochs to run')
@@ -72,7 +72,7 @@ def main():
       exit()
 
     # open session
-    gan = NICE(args)
+    gan = TL-GAN(args)
 
     # build graph
     gan.build_model()
