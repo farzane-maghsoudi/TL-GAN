@@ -448,7 +448,7 @@ class TL-GAN(object) :
         self.gen2B.eval(), self.gen2A.eval(), self.disA.eval(),self.disB.eval()
         for n, (real_A, real_A_path) in enumerate(self.testA_loader):
             real_A = real_A.to(self.device)
-            _, _,  _, _, real_A_z= self.disA(real_A)
+            _,  _, _, real_A_z= self.disA(real_A)
             fake_A2B = self.gen2B(real_A_z)
 
             A2B = RGB2BGR(tensor2numpy(denorm(fake_A2B[0])))
@@ -457,7 +457,7 @@ class TL-GAN(object) :
 
         for n, (real_B, real_B_path) in enumerate(self.testB_loader):
             real_B = real_B.to(self.device)
-            _, _,  _, _, real_B_z= self.disB(real_B)
+            _,  _, _, real_B_z= self.disB(real_B)
             fake_B2A = self.gen2A(real_B_z)
 
             B2A = RGB2BGR(tensor2numpy(denorm(fake_B2A[0])))
