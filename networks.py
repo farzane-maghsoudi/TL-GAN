@@ -284,73 +284,117 @@ class ILN(nn.Module):
 class Discriminator(nn.Module):
     def __init__(self, input_nc, ndf=64, n_layers=7):
         super(Discriminator, self).__init__()
-        model = [nn.ReflectionPad2d(1),
-                 nn.utils.spectral_norm(
-                 nn.Conv2d(input_nc, ndf, kernel_size=4, stride=2, padding=0, bias=True)),
-                 nn.LeakyReLU(0.2, True)]  #1+3*2^0 =4
-
-        for i in range(1, 2):   #1+3*2^0 + 3*2^1 =10        
-            mult = 2 ** (i - 1)
-            model += [nn.ReflectionPad2d(1),
-                      nn.utils.spectral_norm(
-                      nn.Conv2d(ndf * mult, ndf * mult * 2, kernel_size=4, stride=2, padding=0, bias=True)),
-                      nn.LeakyReLU(0.2, True)]    
-
-        # Class Activation Map
-        mult = 2 ** (1)
-        self.fc = nn.utils.spectral_norm(nn.Linear(ndf * mult * 2, 1, bias=False))
-        self.conv1x1 = nn.Conv2d(ndf * mult * 2, ndf * mult, kernel_size=1, stride=1, bias=True)
+		
+		en1_1 = [nn.ReflectionPad2d(4), nn.Upsample(scale_factor=4, mode='bilinear', align_corners=True), nn.utils.spectral_norm(nn.Conv2d(256, 64, 1, bias=True)), nn.LeakyReLU(0.2, True)]		
+		en2_1 = [nn.ReflectionPad2d(2), nn.Upsample(scale_factor=8, mode='bilinear', align_corners=True), nn.utils.spectral_norm(nn.Conv2d(512, 64, 1, bias=True)), nn.LeakyReLU(0.2, True)]
+		en3_1 = [nn.ReflectionPad2d(1), nn.Upsample(scale_factor=16, mode='bilinear', align_corners=True), nn.utils.spectral_norm(nn.Conv2d(1024, 64, 1, bias=True)), nn.LeakyReLU(0.2, True)]
+		aff1_1 = [nn.Conv2d(64, 1, 1, bias=True)]
+		aff2_1 = [nn.Conv2d(64, 1, 1, bias=True)]
+		aff3_1 = [nn.Conv2d(64, 1, 1, bias=True)]
+		
+		en1_2 = [nn.ReflectionPad2d(4), nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True), nn.utils.spectral_norm(nn.Conv2d(256, 128, 1, bias=True)), nn.LeakyReLU(0.2, True)]		
+		en2_2 = [nn.ReflectionPad2d(2), nn.Upsample(scale_factor=4, mode='bilinear', align_corners=True), nn.utils.spectral_norm(nn.Conv2d(512, 128, 1, bias=True)), nn.LeakyReLU(0.2, True)]
+		en3_2 = [nn.ReflectionPad2d(1), nn.Upsample(scale_factor=8, mode='bilinear', align_corners=True), nn.utils.spectral_norm(nn.Conv2d(1024, 128, 1, bias=True)), nn.LeakyReLU(0.2, True)]
+		aff1_2 = [nn.Conv2d(128, 1, 1, bias=True)]
+		aff2_2 = [nn.Conv2d(128, 1, 1, bias=True)]
+		aff3_2 = [nn.Conv2d(128, 1, 1, bias=True)]
+		
+		en1_3 = [nn.ReflectionPad2d(4), nn.Upsample(scale_factor=1, mode='bilinear', align_corners=True), nn.utils.spectral_norm(nn.Conv2d(256, 256, 1, bias=True)), nn.LeakyReLU(0.2, True)]		
+		en2_3 = [nn.ReflectionPad2d(2), nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True), nn.utils.spectral_norm(nn.Conv2d(512, 256, 1, bias=True)), nn.LeakyReLU(0.2, True)]
+		en3_3 = [nn.ReflectionPad2d(1), nn.Upsample(scale_factor=4, mode='bilinear', align_corners=True), nn.utils.spectral_norm(nn.Conv2d(1024, 256, 1, bias=True)), nn.LeakyReLU(0.2, True)]
+		aff1_3 = [nn.Conv2d(256, 1, 1, bias=True)]
+		aff2_3 = [nn.Conv2d(256, 1, 1, bias=True)]
+		aff3_3 = [nn.Conv2d(256, 1, 1, bias=True)]
+		
+        self.fc = nn.utils.spectral_norm(nn.Linear(ndf * 2, 1, bias=False))
+        self.conv1x1 = nn.Conv2d(ndf * 2, ndf, kernel_size=1, stride=1, bias=True)
         self.leaky_relu = nn.LeakyReLU(0.2, True)
         self.lamda = nn.Parameter(torch.zeros(1))
-
-
-        Dis0_0 = []
-        for i in range(2, n_layers - 4):   # 1+3*2^0 + 3*2^1 + 3*2^2 =22
-            mult = 2 ** (i - 1)
-            Dis0_0 += [nn.ReflectionPad2d(1),
+		
+		mult = 64
+		Dis1_1 = []
+		for i in range(3)
+			Dis1_1 += [nn.ReflectionPad2d(1),
                       nn.utils.spectral_norm(
-                      nn.Conv2d(ndf * mult, ndf * mult * 2, kernel_size=4, stride=2, padding=0, bias=True)),
+                      nn.Conv2d(mult*(2**i), mult*(2**(i+1)), kernel_size=3, stride=2, padding=0, bias=True)),
                       nn.LeakyReLU(0.2, True)]
-
-        mult = 2 ** (n_layers - 4 - 1)
-        Dis0_1 = [nn.ReflectionPad2d(1),     #1+3*2^0 + 3*2^1 + 3*2^2 +3*2^3 = 46
-                nn.utils.spectral_norm(
-                nn.Conv2d(ndf * mult, ndf * mult * 2, kernel_size=4, stride=1, padding=0, bias=True)),
-                nn.LeakyReLU(0.2, True)]
-        mult = 2 ** (n_layers - 4)
-        self.conv0 = nn.utils.spectral_norm(   #1+3*2^0 + 3*2^1 + 3*2^2 +3*2^3 + 3*2^3= 70
-            nn.Conv2d(ndf * mult, 1, kernel_size=4, stride=1, padding=0, bias=False))
-
-        
-        Dis1_0 = []
-        for i in range(n_layers - 4, n_layers - 2):   # 1+3*2^0 + 3*2^1 + 3*2^2 + 3*2^3=46, 1+3*2^0 + 3*2^1 + 3*2^2 +3*2^3 +3*2^4 = 94
-            mult = 2 ** (i - 1)
-            Dis1_0 += [nn.ReflectionPad2d(1),
+		Dis1_1 += [nn.utils.spectral_norm(
+                      nn.Conv2d(32, 1, kernel_size=1, stride=1, padding=0, bias=True))]
+					  
+		
+		mult = 128
+		Dis2_2 = []
+		for i in range(3)
+			Dis2_2 += [nn.ReflectionPad2d(1),
                       nn.utils.spectral_norm(
-                      nn.Conv2d(ndf * mult, ndf * mult * 2, kernel_size=4, stride=2, padding=0, bias=True)),
+                      nn.Conv2d(mult*(2**i), mult*(2**(i+1)), kernel_size=3, stride=2, padding=0, bias=True)),
                       nn.LeakyReLU(0.2, True)]
+		Dis2_2 += [nn.utils.spectral_norm(
+                      nn.Conv2d(16, 1, kernel_size=1, stride=1, padding=0, bias=True))]
+					  
+		
+		mult = 256
+		Dis3_3 = []
+		for i in range(3)
+			Dis3_3 += [nn.ReflectionPad2d(1),
+                      nn.utils.spectral_norm(
+                      nn.Conv2d(mult*(2**i), mult*(2**(i+1)), kernel_size=3, stride=2, padding=0, bias=True)),
+                      nn.LeakyReLU(0.2, True)]
+		Dis3_3 += [nn.utils.spectral_norm(
+                      nn.Conv2d(8, 1, kernel_size=1, stride=1, padding=0, bias=True))]
+					  
 
-        mult = 2 ** (n_layers - 2 - 1)
-        Dis1_1 = [nn.ReflectionPad2d(1),  #1+3*2^0 + 3*2^1 + 3*2^2 +3*2^3 +3*2^4 + 3*2^5= 94 + 96 = 190
-                nn.utils.spectral_norm(
-                nn.Conv2d(ndf * mult, ndf * mult * 2, kernel_size=4, stride=1, padding=0, bias=True)),
-                nn.LeakyReLU(0.2, True)]
-        mult = 2 ** (n_layers - 2)
-        self.conv1 = nn.utils.spectral_norm(   #1+3*2^0 + 3*2^1 + 3*2^2 +3*2^3 +3*2^4 + 3*2^5 + 3*2^5 = 286
-            nn.Conv2d(ndf * mult, 1, kernel_size=4, stride=1, padding=0, bias=False))
 
-
-        # self.attn = Self_Attn( ndf * mult)
-        self.pad = nn.ReflectionPad2d(1)
 
         self.model = nn.Sequential(*model)
-        self.Dis0_0 = nn.Sequential(*Dis0_0)
-        self.Dis0_1 = nn.Sequential(*Dis0_1)
-        self.Dis1_0 = nn.Sequential(*Dis1_0)
         self.Dis1_1 = nn.Sequential(*Dis1_1)
+        self.Dis2_2 = nn.Sequential(*Dis2_2)
+        self.Dis3_3 = nn.Sequential(*Dis3_3)
+		self.en1_1 = nn.Sequential(*en1_1)
+		self.en2_1 = nn.Sequential(*en2_1)
+		self.en3_1 = nn.Sequential(*en3_1)
+		self.en1_2 = nn.Sequential(*en1_2)
+		self.en2_2 = nn.Sequential(*en2_2)
+		self.en3_2 = nn.Sequential(*en3_2)
+		self.en1_3 = nn.Sequential(*en1_3)
+		self.en2_3 = nn.Sequential(*en2_3)
+		self.en3_3 = nn.Sequential(*en3_3)
+        
 
     def forward(self, input):
-        x = self.model(input)
+		#encoder:D2
+		
+		res_x = resnet_pre(input)
+		
+		x1_2 = self.en1_2(res_x('layer1'))
+		x2_2 = self.en2_2(res_x('layer2'))
+		x3_2 = self.en3_2(res_x('layer3'))
+		
+		x1_2 = x1_2*self.aff1_2(x1_2)
+		x2_2 = x2_2*self.aff2_2(x2_2)
+		x3_2 = x3_2*self.aff3_2(x3_2)
+		x = x1_2 + x2_2 + x3_2
+		
+		#fution D1/D3
+		x1_1 = self.en1_1(res_x('layer1'))
+		x2_1 = self.en2_1(res_x('layer2'))
+		x3_1 = self.en3_1(res_x('layer3'))
+		
+		x1_1 = x1_1*self.aff1_1(x1_1)
+		x2_1 = x2_1*self.aff2_1(x2_1)
+		x3_1 = x3_1*self.aff3_1(x3_1)
+		D1_0 = x1_1 + x2_1 + x3_1
+		
+		x1_3 = self.en1_3(res_x('layer1'))
+		x2_3 = self.en2_3(res_x('layer2'))
+		x3_3 = self.en3_3(res_x('layer3'))
+		
+		x1_3 = x1_3*self.aff1_2(x1_3)
+		x2_3 = x2_3*self.aff2_2(x2_3)
+		x3_3 = x3_3*self.aff3_2(x3_3)
+		D3_0 = x1_3 + x2_3 + x3_3
+		
+        #x = self.model(input)
 
         x_0 = x
 
@@ -372,16 +416,9 @@ class Discriminator(nn.Module):
 
         z = x
 
-        x0 = self.Dis0_0(x)
-        x1 = self.Dis1_0(x0)
-        x0 = self.Dis0_1(x0)
-        x1 = self.Dis1_1(x1)
-        x0 = self.pad(x0)
-        x1 = self.pad(x1)
-        out0 = self.conv0(x0)
-        out1 = self.conv1(x1)
+		out = (torch.mean(self.Dis1_1(D1_0)) + torch.mean(self.Dis2_2(x)) + torch.mean(self.Dis3_3(D3_0)))/3 
         
-        return out0, out1, cam_logit, heatmap, z
+        return out, cam_logit, heatmap, z
 
     
 class NewResnet(nn.Module):
