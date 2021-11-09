@@ -449,3 +449,158 @@ class NewResnet(nn.Module):
         out = self.pretrained(x)
         return self.selected_out
 
+class Generator(nn.Module):
+    def __init__(self, input_nc, output_nc, ngf=64, n_blocks=6, img_size=256, light=False):
+        assert(n_blocks >= 0)
+        super(Generator, self).__init__()
+        self.input_nc = input_nc
+        self.output_nc = output_nc
+        self.ngf = ngf
+        self.n_blocks = n_blocks
+        self.img_size = img_size
+        self.light = light
+		
+
+        mult = 4
+        UpBlock0 = [nn.ReflectionPad2d(1),
+                nn.Conv2d(int(ngf * mult / 2), ngf * mult, kernel_size=3, stride=2, padding=0, bias=True),
+                ILN(ngf * mult),
+                nn.ReLU(True)]
+
+        self.relu = nn.ReLU(True)
+
+        # Gamma, Beta block
+        if self.light:
+            FC = [nn.Linear(ngf * mult, ngf * mult, bias=False),
+                  nn.ReLU(True),
+                  nn.Linear(ngf * mult, ngf * mult, bias=False),
+                  nn.ReLU(True)]
+        else:
+            FC = [nn.Linear(img_size // mult * img_size // mult * ngf * mult, ngf * mult, bias=False),
+                  nn.ReLU(True),
+                  nn.Linear(ngf * mult, ngf * mult, bias=False),
+                  nn.ReLU(True)]
+        self.gamma = nn.Linear(ngf * mult, ngf * mult, bias=False)
+        self.beta = nn.Linear(ngf * mult, ngf * mult, bias=False)
+		
+		self.gamma = nn.Linear(ngf * mult, ngf * mult, bias=False)
+        self.beta = nn.Linear(ngf * mult, ngf * mult, bias=False)
+
+        # attention Bottleneck
+		attention = AttentionBlock(ngf * mult, use_bias=False)
+		
+		UpBlock1 = [nn.ReflectionPad2d(1),
+                nn.Conv2d(ngf * mult, ngf * mult, kernel_size=3, stride=1, padding=0, bias=True),
+                nn.ReLU(True),
+                nn.Conv2d(ngf * mult, ngf * mult, kernel_size=3, stride=1, padding=1, bias=True)]
+ 
+        # Up-Sampling
+        UpBlock2_1 = [nn.ReflectionPad2d(1),   
+                         nn.Conv2d(ngf * mult, int(ngf * mult / 2), kernel_size=3, stride=1, padding=0, bias=False),
+						 nn.PixelShuffle(2),
+                         ILN(int(ngf * mult / 2)),
+                         nn.ReLU(True),
+                         nn.Conv2d(int(ngf * mult / 2), int(ngf * mult / 4), kernel_size=3, stride=1, bias=True),
+                         nn.PixelShuffle(2),
+                         ILN(int(ngf * mult / 2)),
+                         nn.ReLU(True)
+                         ]
+		UpBlock2_2 = [nn.ReflectionPad2d(1),   
+                         nn.Conv2d(ngf * mult, int(ngf * mult / 2), kernel_size=3, stride=1, padding=0, bias=False),
+						 nn.PixelShuffle(2),
+                         ILN(int(ngf * mult / 2)),
+                         nn.ReLU(True),
+                         nn.Conv2d(int(ngf * mult / 2), int(ngf * mult / 4), kernel_size=3, stride=1, bias=True),
+                         nn.PixelShuffle(2),
+                         ILN(int(ngf * mult / 2)),
+                         nn.ReLU(True)
+                         ]
+
+        UpBlock3 = [nn.ReflectionPad2d(3),
+                     nn.Conv2d(ngf, output_nc, kernel_size=7, stride=1, padding=0, bias=False),
+                     nn.Tanh()]
+					 
+		fusi = fusions.Block([ngf,ngf], ngf)
+
+        self.UpBlock0 = nn.Sequential(*UpBlock0)
+		self.UpBlock1 = nn.Sequential(*UpBlock1)
+        self.UpBlock2_1 = nn.Sequential(*UpBlock2_1)
+		self.UpBlock2_2 = nn.Sequential(*UpBlock2_2)
+		self.UpBlock3 = nn.Sequential(*UpBlock3)
+
+    def forward(self, z):
+        x = z
+        x = self.UpBlock0(x)
+		y = x
+
+        if self.light:
+            x_ = torch.nn.functional.adaptive_avg_pool2d(x, 1)
+            x_ = self.FC(x_.view(x_.shape[0], -1))
+        else:
+            x_ = self.FC(x.view(x.shape[0], -1))
+        gamma, beta = self.gamma(x_), self.beta(x_)
+
+        for i in range(self.n_blocks):
+            x = attention(x, ngf * mult, gamma, beta, use_bias=False)
+		x = self.UpBlock1(x)
+		x = x + y
+		
+		
+		x_de = [self.UpBlock2_1(x), self.UpBlock2_2(x)]
+		x = fusi(x_de)
+
+        out = self.UpBlock3(x)
+
+        return out
+		
+class AttentionBlock(nn.Module):
+    def __init__(self, x, dim, gamma, beta, use_bias):
+        super(AttentionBlock, self).__init__()
+        self.pad1 = nn.ReflectionPad2d(1)
+        self.conv1 = nn.Conv2d(dim, dim, kernel_size=3, stride=1, padding=0, bias=use_bias)
+        self.norm1 = adaILN(dim)
+        self.relu1 = nn.ReLU(True)
+
+        self.pad2 = nn.ReflectionPad2d(1)
+        self.conv2 = nn.Conv2d(dim, dim, kernel_size=3, stride=1, padding=0, bias=use_bias)
+        self.norm2 = adaILN(dim)
+		
+		self.dence2 = nn.Linear(dim,dim/2)
+		self.relu2 = nn.ReLU(True)
+		self.relu3 = nn.ReLU(True)
+		self.dence3 = nn.Linear(dim/2,dim)
+		self.conv3 = nn.Conv2d(dim*2, dim, kernel_size=3, stride=1, padding=0, bias=use_bias)
+		self.avgpool = nn.AvgPool2d(64, stride=1)
+		
+    def forward(self, x, gamma, beta):
+        x1 = self.pad1(x)
+        x1 = self.conv1(x1)
+        x1 = self.norm1(x1, gamma, beta)
+        x1 = self.relu1(x1)
+        x1 = self.pad2(x1)
+        x1 = self.conv2(x1)
+		
+		x2 = self.avgpool(x1)
+		x2 = self.dence2(x2)
+		x2 = self.relu2(x2)
+		x2 = self.dence3(x2)
+		
+		x3 = torch.cat((x1,(x1*x2)),2)
+		out = self.conv3(x3)
+        out = self.norm2(out, gamma, beta)
+
+        return out + x
+		
+class MultiSelfAttentionBlock(nn.Module):
+    def __init__(self, x, dim, n_channel, n_head):
+        super(AttentionBlock, self).__init__()
+        self.atten  = torch.nn.MultiheadAttention(dim, n_head)
+		
+		
+    def forward(self, x, dim, n_channel):
+		out = torch.reshape(x, (n_channel, dim, dim))
+		out = self.atten(out, out, out)
+		out = torch.reshape(out, (1, n_channel, dim, dim))
+
+        return out + x
+		
