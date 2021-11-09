@@ -40,6 +40,14 @@ def parse_args():
     parser.add_argument('--resume', type=str2bool, default=False)
     parser.add_argument('--gradient_penalty_weight', type=float, default=10.0)
     parser.add_argument('--n_downsampling', type=int, default=2, help='The number of downsampling')
+parser.add_argument('--checkpoint_dir', type=str, default='checkpoint',
+                        help='Directory name to save the checkpoints')
+    parser.add_argument('--result_dir', type=str, default='results',
+                        help='Directory name to save the generated images')
+    parser.add_argument('--log_dir', type=str, default='logs',
+                        help='Directory name to save training logs')
+    parser.add_argument('--sample_dir', type=str, default='samples',
+                        help='Directory name to save the samples on training')
 
     return check_args(parser.parse_args())
 
@@ -51,6 +59,19 @@ def check_args(args):
     check_folder(os.path.join(args.result_dir, args.dataset, 'fakeA'))
     check_folder(os.path.join(args.result_dir, args.dataset, 'fakeB'))
     check_folder(args.checkpoint_dir)
+
+    # --epoch
+# --checkpoint_dir
+    check_folder(args.checkpoint_dir)
+
+    # --result_dir
+    check_folder(args.result_dir)
+
+    # --result_dir
+    check_folder(args.log_dir)
+
+    # --sample_dir
+    check_folder(args.sample_dir)
 
     # --epoch
     try:
