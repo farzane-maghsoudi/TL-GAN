@@ -23,7 +23,6 @@ class TL-GAN(object) :
 
         self.iteration = args.iteration
         self.decay_flag = args.decay_flag
-
         self.batch_size = args.batch_size
         self.print_freq = args.print_freq
         self.save_freq = args.save_freq
