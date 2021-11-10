@@ -155,64 +155,64 @@ class Discriminator(nn.Module):
     def __init__(self, input_nc, ndf=64, n_layers=7):
         super(Discriminator, self).__init__()
 		
-		en1_1 = [nn.ReflectionPad2d(4), nn.Upsample(scale_factor=4, mode='bilinear', align_corners=True), nn.utils.spectral_norm(nn.Conv2d(256, 64, 1, bias=True)), nn.LeakyReLU(0.2, True)]		
-		en2_1 = [nn.ReflectionPad2d(2), nn.Upsample(scale_factor=8, mode='bilinear', align_corners=True), nn.utils.spectral_norm(nn.Conv2d(512, 64, 1, bias=True)), nn.LeakyReLU(0.2, True)]
-		en3_1 = [nn.ReflectionPad2d(1), nn.Upsample(scale_factor=16, mode='bilinear', align_corners=True), nn.utils.spectral_norm(nn.Conv2d(1024, 64, 1, bias=True)), nn.LeakyReLU(0.2, True)]
-		aff1_1 = [nn.Conv2d(64, 1, 1, bias=True)]
-		aff2_1 = [nn.Conv2d(64, 1, 1, bias=True)]
-		aff3_1 = [nn.Conv2d(64, 1, 1, bias=True)]
-		
-		en1_2 = [nn.ReflectionPad2d(4), nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True), nn.utils.spectral_norm(nn.Conv2d(256, 128, 1, bias=True)), nn.LeakyReLU(0.2, True)]		
-		en2_2 = [nn.ReflectionPad2d(2), nn.Upsample(scale_factor=4, mode='bilinear', align_corners=True), nn.utils.spectral_norm(nn.Conv2d(512, 128, 1, bias=True)), nn.LeakyReLU(0.2, True)]
-		en3_2 = [nn.ReflectionPad2d(1), nn.Upsample(scale_factor=8, mode='bilinear', align_corners=True), nn.utils.spectral_norm(nn.Conv2d(1024, 128, 1, bias=True)), nn.LeakyReLU(0.2, True)]
-		aff1_2 = [nn.Conv2d(128, 1, 1, bias=True)]
-		aff2_2 = [nn.Conv2d(128, 1, 1, bias=True)]
-		aff3_2 = [nn.Conv2d(128, 1, 1, bias=True)]
-		
-		en1_3 = [nn.ReflectionPad2d(4), nn.Upsample(scale_factor=1, mode='bilinear', align_corners=True), nn.utils.spectral_norm(nn.Conv2d(256, 256, 1, bias=True)), nn.LeakyReLU(0.2, True)]		
-		en2_3 = [nn.ReflectionPad2d(2), nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True), nn.utils.spectral_norm(nn.Conv2d(512, 256, 1, bias=True)), nn.LeakyReLU(0.2, True)]
-		en3_3 = [nn.ReflectionPad2d(1), nn.Upsample(scale_factor=4, mode='bilinear', align_corners=True), nn.utils.spectral_norm(nn.Conv2d(1024, 256, 1, bias=True)), nn.LeakyReLU(0.2, True)]
-		aff1_3 = [nn.Conv2d(256, 1, 1, bias=True)]
-		aff2_3 = [nn.Conv2d(256, 1, 1, bias=True)]
-		aff3_3 = [nn.Conv2d(256, 1, 1, bias=True)]
+        en1_1 = [nn.ReflectionPad2d(4), nn.Upsample(scale_factor=4, mode='bilinear', align_corners=True), nn.utils.spectral_norm(nn.Conv2d(256, 64, 1, bias=True)), nn.LeakyReLU(0.2, True)]		
+        en2_1 = [nn.ReflectionPad2d(2), nn.Upsample(scale_factor=8, mode='bilinear', align_corners=True), nn.utils.spectral_norm(nn.Conv2d(512, 64, 1, bias=True)), nn.LeakyReLU(0.2, True)]
+        en3_1 = [nn.ReflectionPad2d(1), nn.Upsample(scale_factor=16, mode='bilinear', align_corners=True), nn.utils.spectral_norm(nn.Conv2d(1024, 64, 1, bias=True)), nn.LeakyReLU(0.2, True)]
+        aff1_1 = [nn.Conv2d(64, 1, 1, bias=True)]
+        aff2_1 = [nn.Conv2d(64, 1, 1, bias=True)]
+        aff3_1 = [nn.Conv2d(64, 1, 1, bias=True)]
+        
+        en1_2 = [nn.ReflectionPad2d(4), nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True), nn.utils.spectral_norm(nn.Conv2d(256, 128, 1, bias=True)), nn.LeakyReLU(0.2, True)]		
+        en2_2 = [nn.ReflectionPad2d(2), nn.Upsample(scale_factor=4, mode='bilinear', align_corners=True), nn.utils.spectral_norm(nn.Conv2d(512, 128, 1, bias=True)), nn.LeakyReLU(0.2, True)]
+        en3_2 = [nn.ReflectionPad2d(1), nn.Upsample(scale_factor=8, mode='bilinear', align_corners=True), nn.utils.spectral_norm(nn.Conv2d(1024, 128, 1, bias=True)), nn.LeakyReLU(0.2, True)]
+        aff1_2 = [nn.Conv2d(128, 1, 1, bias=True)]
+        aff2_2 = [nn.Conv2d(128, 1, 1, bias=True)]
+        aff3_2 = [nn.Conv2d(128, 1, 1, bias=True)]
+        
+        en1_3 = [nn.ReflectionPad2d(4), nn.Upsample(scale_factor=1, mode='bilinear', align_corners=True), nn.utils.spectral_norm(nn.Conv2d(256, 256, 1, bias=True)), nn.LeakyReLU(0.2, True)]		
+        en2_3 = [nn.ReflectionPad2d(2), nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True), nn.utils.spectral_norm(nn.Conv2d(512, 256, 1, bias=True)), nn.LeakyReLU(0.2, True)]
+        en3_3 = [nn.ReflectionPad2d(1), nn.Upsample(scale_factor=4, mode='bilinear', align_corners=True), nn.utils.spectral_norm(nn.Conv2d(1024, 256, 1, bias=True)), nn.LeakyReLU(0.2, True)]
+        aff1_3 = [nn.Conv2d(256, 1, 1, bias=True)]
+        aff2_3 = [nn.Conv2d(256, 1, 1, bias=True)]
+        aff3_3 = [nn.Conv2d(256, 1, 1, bias=True)]
 		
         self.fc = nn.utils.spectral_norm(nn.Linear(ndf * 2, 1, bias=False))
         self.conv1x1 = nn.Conv2d(ndf * 2, ndf, kernel_size=1, stride=1, bias=True)
         self.leaky_relu = nn.LeakyReLU(0.2, True)
         self.lamda = nn.Parameter(torch.zeros(1))
 		
-		mult = 64
-		Dis1_1 = []
-		for i in range(3)
-			Dis1_1 += [nn.ReflectionPad2d(1),
-                      nn.utils.spectral_norm(
-                      nn.Conv2d(mult*(2**i), mult*(2**(i+1)), kernel_size=3, stride=2, padding=0, bias=True)),
-                      nn.LeakyReLU(0.2, True)]
-		Dis1_1 += [nn.utils.spectral_norm(
-                      nn.Conv2d(32, 1, kernel_size=1, stride=1, padding=0, bias=True))]
-					  
-		
-		mult = 128
-		Dis2_2 = []
-		for i in range(3)
-			Dis2_2 += [nn.ReflectionPad2d(1),
-                      nn.utils.spectral_norm(
-                      nn.Conv2d(mult*(2**i), mult*(2**(i+1)), kernel_size=3, stride=2, padding=0, bias=True)),
-                      nn.LeakyReLU(0.2, True)]
-		Dis2_2 += [nn.utils.spectral_norm(
-                      nn.Conv2d(16, 1, kernel_size=1, stride=1, padding=0, bias=True))]
-					  
-		
-		mult = 256
-		Dis3_3 = []
-		for i in range(3)
-			Dis3_3 += [nn.ReflectionPad2d(1),
-                      nn.utils.spectral_norm(
-                      nn.Conv2d(mult*(2**i), mult*(2**(i+1)), kernel_size=3, stride=2, padding=0, bias=True)),
-                      nn.LeakyReLU(0.2, True)]
-		Dis3_3 += [nn.utils.spectral_norm(
-                      nn.Conv2d(8, 1, kernel_size=1, stride=1, padding=0, bias=True))]
-					  
+        mult = 64
+        Dis1_1 = []
+        for i in range(3)
+          Dis1_1 += [nn.ReflectionPad2d(1),
+                          nn.utils.spectral_norm(
+                          nn.Conv2d(mult*(2**i), mult*(2**(i+1)), kernel_size=3, stride=2, padding=0, bias=True)),
+                          nn.LeakyReLU(0.2, True)]
+        Dis1_1 += [nn.utils.spectral_norm(
+                          nn.Conv2d(32, 1, kernel_size=1, stride=1, padding=0, bias=True))]
+                
+        
+        mult = 128
+        Dis2_2 = []
+        for i in range(3)
+          Dis2_2 += [nn.ReflectionPad2d(1),
+                          nn.utils.spectral_norm(
+                          nn.Conv2d(mult*(2**i), mult*(2**(i+1)), kernel_size=3, stride=2, padding=0, bias=True)),
+                          nn.LeakyReLU(0.2, True)]
+        Dis2_2 += [nn.utils.spectral_norm(
+                          nn.Conv2d(16, 1, kernel_size=1, stride=1, padding=0, bias=True))]
+                
+        
+        mult = 256
+        Dis3_3 = []
+        for i in range(3)
+          Dis3_3 += [nn.ReflectionPad2d(1),
+                          nn.utils.spectral_norm(
+                          nn.Conv2d(mult*(2**i), mult*(2**(i+1)), kernel_size=3, stride=2, padding=0, bias=True)),
+                          nn.LeakyReLU(0.2, True)]
+        Dis3_3 += [nn.utils.spectral_norm(
+                          nn.Conv2d(8, 1, kernel_size=1, stride=1, padding=0, bias=True))]
+                
 
 
 
@@ -220,49 +220,49 @@ class Discriminator(nn.Module):
         self.Dis1_1 = nn.Sequential(*Dis1_1)
         self.Dis2_2 = nn.Sequential(*Dis2_2)
         self.Dis3_3 = nn.Sequential(*Dis3_3)
-		self.en1_1 = nn.Sequential(*en1_1)
-		self.en2_1 = nn.Sequential(*en2_1)
-		self.en3_1 = nn.Sequential(*en3_1)
-		self.en1_2 = nn.Sequential(*en1_2)
-		self.en2_2 = nn.Sequential(*en2_2)
-		self.en3_2 = nn.Sequential(*en3_2)
-		self.en1_3 = nn.Sequential(*en1_3)
-		self.en2_3 = nn.Sequential(*en2_3)
-		self.en3_3 = nn.Sequential(*en3_3)
+        self.en1_1 = nn.Sequential(*en1_1)
+        self.en2_1 = nn.Sequential(*en2_1)
+        self.en3_1 = nn.Sequential(*en3_1)
+        self.en1_2 = nn.Sequential(*en1_2)
+        self.en2_2 = nn.Sequential(*en2_2)
+        self.en3_2 = nn.Sequential(*en3_2)
+        self.en1_3 = nn.Sequential(*en1_3)
+        self.en2_3 = nn.Sequential(*en2_3)
+        self.en3_3 = nn.Sequential(*en3_3)
         
 
     def forward(self, input):
-		#encoder:D2
-		
-		res_x = resnet_pre(input)
-		
-		x1_2 = self.en1_2(res_x('layer1'))
-		x2_2 = self.en2_2(res_x('layer2'))
-		x3_2 = self.en3_2(res_x('layer3'))
-		
-		x1_2 = x1_2*self.aff1_2(x1_2)
-		x2_2 = x2_2*self.aff2_2(x2_2)
-		x3_2 = x3_2*self.aff3_2(x3_2)
-		x = x1_2 + x2_2 + x3_2
-		
-		#fution D1/D3
-		x1_1 = self.en1_1(res_x('layer1'))
-		x2_1 = self.en2_1(res_x('layer2'))
-		x3_1 = self.en3_1(res_x('layer3'))
-		
-		x1_1 = x1_1*self.aff1_1(x1_1)
-		x2_1 = x2_1*self.aff2_1(x2_1)
-		x3_1 = x3_1*self.aff3_1(x3_1)
-		D1_0 = x1_1 + x2_1 + x3_1
-		
-		x1_3 = self.en1_3(res_x('layer1'))
-		x2_3 = self.en2_3(res_x('layer2'))
-		x3_3 = self.en3_3(res_x('layer3'))
-		
-		x1_3 = x1_3*self.aff1_2(x1_3)
-		x2_3 = x2_3*self.aff2_2(x2_3)
-		x3_3 = x3_3*self.aff3_2(x3_3)
-		D3_0 = x1_3 + x2_3 + x3_3
+        #encoder:D2
+        
+        res_x = resnet_pre(input)
+        
+        x1_2 = self.en1_2(res_x('layer1'))
+        x2_2 = self.en2_2(res_x('layer2'))
+        x3_2 = self.en3_2(res_x('layer3'))
+        
+        x1_2 = x1_2*self.aff1_2(x1_2)
+        x2_2 = x2_2*self.aff2_2(x2_2)
+        x3_2 = x3_2*self.aff3_2(x3_2)
+        x = x1_2 + x2_2 + x3_2
+        
+        #fution D1/D3
+        x1_1 = self.en1_1(res_x('layer1'))
+        x2_1 = self.en2_1(res_x('layer2'))
+        x3_1 = self.en3_1(res_x('layer3'))
+        
+        x1_1 = x1_1*self.aff1_1(x1_1)
+        x2_1 = x2_1*self.aff2_1(x2_1)
+        x3_1 = x3_1*self.aff3_1(x3_1)
+        D1_0 = x1_1 + x2_1 + x3_1
+        
+        x1_3 = self.en1_3(res_x('layer1'))
+        x2_3 = self.en2_3(res_x('layer2'))
+        x3_3 = self.en3_3(res_x('layer3'))
+        
+        x1_3 = x1_3*self.aff1_2(x1_3)
+        x2_3 = x2_3*self.aff2_2(x2_3)
+        x3_3 = x3_3*self.aff3_2(x3_3)
+        D3_0 = x1_3 + x2_3 + x3_3
 		
         #x = self.model(input)
 
@@ -286,7 +286,7 @@ class Discriminator(nn.Module):
 
         z = x
 
-		out = (torch.mean(self.Dis1_1(D1_0)) + torch.mean(self.Dis2_2(x)) + torch.mean(self.Dis3_3(D3_0)))/3 
+		    out = (torch.mean(self.Dis1_1(D1_0)) + torch.mean(self.Dis2_2(x)) + torch.mean(self.Dis3_3(D3_0)))/3 
         
         return out, cam_logit, heatmap, z
 
@@ -332,9 +332,9 @@ class Generator(nn.Module):
 
         mult = 4
         UpBlock0 = [nn.ReflectionPad2d(1),
-                nn.Conv2d(int(ngf * mult / 2), ngf * mult, kernel_size=3, stride=2, padding=0, bias=True),
-                ILN(ngf * mult),
-                nn.ReLU(True)]
+                    nn.Conv2d(int(ngf * mult / 2), ngf * mult, kernel_size=3, stride=2, padding=0, bias=True),
+                    ILN(ngf * mult),
+                    nn.ReLU(True)]
 
         self.relu = nn.ReLU(True)
 
@@ -353,52 +353,52 @@ class Generator(nn.Module):
         #self.beta = nn.Linear(ngf * mult, ngf * mult, bias=False)
 
         # attention Bottleneck
-	#	attention = AttentionBlock(ngf * mult, use_bias=False)
-		attention = MultiSelfAttentionBlock(ngf, ngf * mult)
-		
-		UpBlock1 = [nn.ReflectionPad2d(1),
-                nn.Conv2d(ngf * mult, ngf * mult, kernel_size=3, stride=1, padding=0, bias=True),
-                nn.ReLU(True),
-                nn.Conv2d(ngf * mult, ngf * mult, kernel_size=3, stride=1, padding=1, bias=True)]
- 
+	      #	attention = AttentionBlock(ngf * mult, use_bias=False)
+        attention = MultiSelfAttentionBlock(ngf, ngf * mult)
+        
+        UpBlock1 = [nn.ReflectionPad2d(1),
+                    nn.Conv2d(ngf * mult, ngf * mult, kernel_size=3, stride=1, padding=0, bias=True),
+                    nn.ReLU(True),
+                    nn.Conv2d(ngf * mult, ngf * mult, kernel_size=3, stride=1, padding=1, bias=True)]
+    
         # Up-Sampling
         UpBlock2_1 = [nn.ReflectionPad2d(1),   
-                         nn.Conv2d(ngf * mult, int(ngf * mult / 2), kernel_size=3, stride=1, padding=0, bias=False),
-						 nn.PixelShuffle(2),
-                         ILN(int(ngf * mult / 2)),
-                         nn.ReLU(True),
-                         nn.Conv2d(int(ngf * mult / 2), int(ngf * mult / 4), kernel_size=3, stride=1, bias=True),
-                         nn.PixelShuffle(2),
-                         ILN(int(ngf * mult / 2)),
-                         nn.ReLU(True)
-                         ]
-		UpBlock2_2 = [nn.ReflectionPad2d(1),   
-                         nn.Conv2d(ngf * mult, int(ngf * mult / 2), kernel_size=3, stride=1, padding=0, bias=False),
-						 nn.PixelShuffle(2),
-                         ILN(int(ngf * mult / 2)),
-                         nn.ReLU(True),
-                         nn.Conv2d(int(ngf * mult / 2), int(ngf * mult / 4), kernel_size=3, stride=1, bias=True),
-                         nn.PixelShuffle(2),
-                         ILN(int(ngf * mult / 2)),
-                         nn.ReLU(True)
-                         ]
+                    nn.Conv2d(ngf * mult, int(ngf * mult / 2), kernel_size=3, stride=1, padding=0, bias=False),
+                    nn.PixelShuffle(2),
+                    ILN(int(ngf * mult / 2)),
+                    nn.ReLU(True),
+                    nn.Conv2d(int(ngf * mult / 2), int(ngf * mult / 4), kernel_size=3, stride=1, bias=True),
+                    nn.PixelShuffle(2),
+                    ILN(int(ngf * mult / 2)),
+                    nn.ReLU(True)
+                    ]
+        UpBlock2_2 = [nn.ReflectionPad2d(1),   
+                    nn.Conv2d(ngf * mult, int(ngf * mult / 2), kernel_size=3, stride=1, padding=0, bias=False),
+                    nn.PixelShuffle(2),
+                    ILN(int(ngf * mult / 2)),
+                    nn.ReLU(True),
+                    nn.Conv2d(int(ngf * mult / 2), int(ngf * mult / 4), kernel_size=3, stride=1, bias=True),
+                    nn.PixelShuffle(2),
+                    ILN(int(ngf * mult / 2)),
+                    nn.ReLU(True)
+                    ]
 
         UpBlock3 = [nn.ReflectionPad2d(3),
-                     nn.Conv2d(ngf, output_nc, kernel_size=7, stride=1, padding=0, bias=False),
-                     nn.Tanh()]
+                    nn.Conv2d(ngf, output_nc, kernel_size=7, stride=1, padding=0, bias=False),
+                    nn.Tanh()]
 					 
-		fusi = fusions.Block([ngf,ngf], ngf)
+		    fusi = fusions.Block([ngf,ngf], ngf)
 
         self.UpBlock0 = nn.Sequential(*UpBlock0)
-		self.UpBlock1 = nn.Sequential(*UpBlock1)
+		    self.UpBlock1 = nn.Sequential(*UpBlock1)
         self.UpBlock2_1 = nn.Sequential(*UpBlock2_1)
-		self.UpBlock2_2 = nn.Sequential(*UpBlock2_2)
-		self.UpBlock3 = nn.Sequential(*UpBlock3)
+		    self.UpBlock2_2 = nn.Sequential(*UpBlock2_2)
+		    self.UpBlock3 = nn.Sequential(*UpBlock3)
 
     def forward(self, z):
         x = z
         x = self.UpBlock0(x)
-		y = x
+		    y = x
 
         #if self.light:
         #    x_ = torch.nn.functional.adaptive_avg_pool2d(x, 1)
@@ -408,15 +408,14 @@ class Generator(nn.Module):
         #gamma, beta = self.gamma(x_), self.beta(x_)
 
         for i in range(self.n_blocks):
-		x = attention(x)
+		    x = attention(x)
         #    x = attention(x, ngf * mult, gamma, beta, use_bias=False)
 		
-		x = self.UpBlock1(x)
-		x = x + y
+		    x = self.UpBlock1(x)
+		    x = x + y	
 		
-		
-		x_de = [self.UpBlock2_1(x), self.UpBlock2_2(x)]
-		x = fusi(x_de)
+		    x_de = [self.UpBlock2_1(x), self.UpBlock2_2(x)]
+		    x = fusi(x_de)
 
         out = self.UpBlock3(x)
 
@@ -434,12 +433,12 @@ class AttentionBlock(nn.Module):
         self.conv2 = nn.Conv2d(dim, dim, kernel_size=3, stride=1, padding=0, bias=use_bias)
         self.norm2 = adaILN(dim)
 		
-		self.dence2 = nn.Linear(dim,dim/2)
-		self.relu2 = nn.ReLU(True)
-		self.relu3 = nn.ReLU(True)
-		self.dence3 = nn.Linear(dim/2,dim)
-		self.conv3 = nn.Conv2d(dim*2, dim, kernel_size=3, stride=1, padding=0, bias=use_bias)
-		self.avgpool = nn.AvgPool2d(64, stride=1)
+        self.dence2 = nn.Linear(dim,dim/2)
+        self.relu2 = nn.ReLU(True)
+        self.relu3 = nn.ReLU(True)
+        self.dence3 = nn.Linear(dim/2,dim)
+        self.conv3 = nn.Conv2d(dim*2, dim, kernel_size=3, stride=1, padding=0, bias=use_bias)
+        self.avgpool = nn.AvgPool2d(64, stride=1)
 		
     def forward(self, x, gamma, beta):
         x1 = self.pad1(x)
@@ -449,13 +448,13 @@ class AttentionBlock(nn.Module):
         x1 = self.pad2(x1)
         x1 = self.conv2(x1)
 		
-		x2 = self.avgpool(x1)
-		x2 = self.dence2(x2)
-		x2 = self.relu2(x2)
-		x2 = self.dence3(x2)
+        x2 = self.avgpool(x1)
+        x2 = self.dence2(x2)
+        x2 = self.relu2(x2)
+        x2 = self.dence3(x2)
 		
-		x3 = torch.cat((x1,(x1*x2)),2)
-		out = self.conv3(x3)
+        x3 = torch.cat((x1,(x1*x2)),2)
+        out = self.conv3(x3)
         out = self.norm2(out, gamma, beta)
 
         return out + x
@@ -467,9 +466,9 @@ class MultiSelfAttentionBlock(nn.Module):
 		
 		
     def forward(self, x, dim, n_channel):
-		out = torch.reshape(x, (n_channel, dim, dim))
-		out = self.atten(out, out, out)
-		out = torch.reshape(out, (1, n_channel, dim, dim))
+        out = torch.reshape(x, (n_channel, dim, dim))
+        out = self.atten(out, out, out)
+        out = torch.reshape(out, (1, n_channel, dim, dim))
 
         return out + x
 		
