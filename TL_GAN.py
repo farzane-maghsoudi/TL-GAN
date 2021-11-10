@@ -9,7 +9,7 @@ from glob import glob
 from thop import profile
 from thop import clever_format
 
-class TL-GAN(object) :
+class TL_GAN(object) :
     def __init__(self, args):
         self.light = args.light
 
