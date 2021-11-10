@@ -285,8 +285,7 @@ class Discriminator(nn.Module):
         heatmap = torch.sum(x, dim=1, keepdim=True)
 
         z = x
-
-		    out = (torch.mean(self.Dis1_1(D1_0)) + torch.mean(self.Dis2_2(x)) + torch.mean(self.Dis3_3(D3_0)))/3 
+        out = (torch.mean(self.Dis1_1(D1_0)) + torch.mean(self.Dis2_2(x)) + torch.mean(self.Dis3_3(D3_0)))/3 
         
         return out, cam_logit, heatmap, z
 
@@ -386,19 +385,19 @@ class Generator(nn.Module):
         UpBlock3 = [nn.ReflectionPad2d(3),
                     nn.Conv2d(ngf, output_nc, kernel_size=7, stride=1, padding=0, bias=False),
                     nn.Tanh()]
-					 
-		    fusi = fusions.Block([ngf,ngf], ngf)
+                    
+        fusi = fusions.Block([ngf,ngf], ngf)
 
         self.UpBlock0 = nn.Sequential(*UpBlock0)
-		    self.UpBlock1 = nn.Sequential(*UpBlock1)
+        self.UpBlock1 = nn.Sequential(*UpBlock1)
         self.UpBlock2_1 = nn.Sequential(*UpBlock2_1)
-		    self.UpBlock2_2 = nn.Sequential(*UpBlock2_2)
-		    self.UpBlock3 = nn.Sequential(*UpBlock3)
+        self.UpBlock2_2 = nn.Sequential(*UpBlock2_2)
+        self.UpBlock3 = nn.Sequential(*UpBlock3)
 
     def forward(self, z):
         x = z
         x = self.UpBlock0(x)
-		    y = x
+        y = x
 
         #if self.light:
         #    x_ = torch.nn.functional.adaptive_avg_pool2d(x, 1)
@@ -408,14 +407,14 @@ class Generator(nn.Module):
         #gamma, beta = self.gamma(x_), self.beta(x_)
 
         for i in range(self.n_blocks):
-		    x = attention(x)
-        #    x = attention(x, ngf * mult, gamma, beta, use_bias=False)
-		
-		    x = self.UpBlock1(x)
-		    x = x + y	
-		
-		    x_de = [self.UpBlock2_1(x), self.UpBlock2_2(x)]
-		    x = fusi(x_de)
+            x = attention(x)
+            #x = attention(x, ngf * mult, gamma, beta, use_bias=False)
+            
+        x = self.UpBlock1(x)
+        x = x + y	
+        
+        x_de = [self.UpBlock2_1(x), self.UpBlock2_2(x)]
+        x = fusi(x_de)
 
         out = self.UpBlock3(x)
 
