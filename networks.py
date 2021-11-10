@@ -459,15 +459,17 @@ class AttentionBlock(nn.Module):
         return out + x
 		
 class MultiSelfAttentionBlock(nn.Module):
-    def __init__(self, dim, n_channel):
+    def __init__(self, dim, n_channel = 8):
         super(AttentionBlock, self).__init__()
-        self.atten  = torch.nn.MultiheadAttention(dim, 8)
+	self.dim = dim
+	self.n_channel = n_channel
+        self.atten  = torch.nn.MultiheadAttention(dim, n_channel)
 		
 		
-    def forward(self, x, dim, n_channel):
-        out = torch.reshape(x, (n_channel, dim, dim))
+    def forward(self, x):
+        out = torch.reshape(x, (self.n_channel, self.dim, self.dim))
         out = self.atten(out, out, out)
-        out = torch.reshape(out, (1, n_channel, dim, dim))
+        out = torch.reshape(out, (1, self.n_channel, self.dim, self.dim))
 
         return out + x
 		
