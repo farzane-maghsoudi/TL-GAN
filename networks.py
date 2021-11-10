@@ -183,7 +183,7 @@ class Discriminator(nn.Module):
 		
         mult = 64
         Dis1_1 = []
-        for i in range(3)
+        for i in range(3):
           Dis1_1 += [nn.ReflectionPad2d(1),
                           nn.utils.spectral_norm(
                           nn.Conv2d(mult*(2**i), mult*(2**(i+1)), kernel_size=3, stride=2, padding=0, bias=True)),
@@ -194,7 +194,7 @@ class Discriminator(nn.Module):
         
         mult = 128
         Dis2_2 = []
-        for i in range(3)
+        for i in range(3):
           Dis2_2 += [nn.ReflectionPad2d(1),
                           nn.utils.spectral_norm(
                           nn.Conv2d(mult*(2**i), mult*(2**(i+1)), kernel_size=3, stride=2, padding=0, bias=True)),
@@ -205,7 +205,7 @@ class Discriminator(nn.Module):
         
         mult = 256
         Dis3_3 = []
-        for i in range(3)
+        for i in range(3):
           Dis3_3 += [nn.ReflectionPad2d(1),
                           nn.utils.spectral_norm(
                           nn.Conv2d(mult*(2**i), mult*(2**(i+1)), kernel_size=3, stride=2, padding=0, bias=True)),
