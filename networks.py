@@ -353,7 +353,7 @@ class Generator(nn.Module):
 
         # attention Bottleneck
 	      #	attention = AttentionBlock(ngf * mult, use_bias=False)
-        attention = MultiSelfAttentionBlock(ngf, ngf * mult)
+        attention = MultiSelfAttentionBlock(dim = ngf, featur= ngf * mult, n_channel = 8)
         
         UpBlock1 = [nn.ReflectionPad2d(1),
                     nn.Conv2d(ngf * mult, ngf * mult, kernel_size=3, stride=1, padding=0, bias=True),
@@ -459,17 +459,18 @@ class AttentionBlock(nn.Module):
         return out + x
 		
 class MultiSelfAttentionBlock(nn.Module):
-    def __init__(self, dim, n_channel = 8):
+    def __init__(self, dim = 256, featur= 64, n_channel = 8):
         super(AttentionBlock, self).__init__()
 	      self.dim = dim
         self.n_channel = n_channel
+	self.featur = featur
         self.atten  = torch.nn.MultiheadAttention(dim, n_channel)
 		
 		
     def forward(self, x):
-        out = torch.reshape(x, (self.n_channel, self.dim, self.dim))
+        out = torch.reshape(x, (self.featur, self.dim, self.dim))
         out = self.atten(out, out, out)
-        out = torch.reshape(out, (1, self.n_channel, self.dim, self.dim))
+        out = torch.reshape(out, (1, self.featur, self.dim, self.dim))
 
         return out + x
 		
