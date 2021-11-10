@@ -6,7 +6,7 @@ from networks import NewResnet
 """parsing and configuration"""
 
 def parse_args():
-    desc = "Pytorch implementation of TL-GAN"
+    desc = "Pytorch implementation of TL_GAN"
     parser = argparse.ArgumentParser(description=desc)
     parser.add_argument('--phase', type=str, default='train', help='[train / test]')
     parser.add_argument('--light', type=str2bool, default=False, help='[TL_GAN full version / TL_GAN light version]')
