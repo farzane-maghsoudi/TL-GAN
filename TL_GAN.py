@@ -227,7 +227,7 @@ class TL_GAN(object) :
             D_ad_cam_loss_A = self.MSE_loss(real_A_cam_logit, torch.ones_like(real_A_cam_logit).to(self.device)) + self.MSE_loss(fake_A_cam_logit, torch.zeros_like(fake_A_cam_logit).to(self.device))
             D_ad_cam_loss_B = self.MSE_loss(real_B_cam_logit, torch.ones_like(real_B_cam_logit).to(self.device)) + self.MSE_loss(fake_B_cam_logit, torch.zeros_like(fake_B_cam_logit).to(self.device))
 			
-	    D_feature_loss_A = self.L1_loss(real_A_z, fake_B_z)
+		D_feature_loss_A = self.L1_loss(real_A_z, fake_B_z)
             D_feature_loss_B = self.L1_loss(real_B_z, fake_A_z)
 			
 	    D_loss_A = self.adv_weight * (D_ad_loss_A + D_ad_cam_loss_A) + self.feature_weight * D_feature_loss_A
