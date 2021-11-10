@@ -463,7 +463,7 @@ class MultiSelfAttentionBlock(nn.Module):
         super(AttentionBlock, self).__init__()
 	      self.dim = dim
         self.n_channel = n_channel
-	self.featur = featur
+	      self.featur = featur
         self.atten  = torch.nn.MultiheadAttention(dim, n_channel)
 		
 		
