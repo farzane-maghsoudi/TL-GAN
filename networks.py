@@ -159,23 +159,23 @@ class Discriminator(nn.Module):
         en1_1 = [nn.ReflectionPad2d(4), nn.Upsample(scale_factor=4, mode='bilinear', align_corners=True), nn.utils.spectral_norm(nn.Conv2d(256, 64, 1, bias=True)), nn.LeakyReLU(0.2, True)]		
         en2_1 = [nn.ReflectionPad2d(2), nn.Upsample(scale_factor=8, mode='bilinear', align_corners=True), nn.utils.spectral_norm(nn.Conv2d(512, 64, 1, bias=True)), nn.LeakyReLU(0.2, True)]
         en3_1 = [nn.ReflectionPad2d(1), nn.Upsample(scale_factor=16, mode='bilinear', align_corners=True), nn.utils.spectral_norm(nn.Conv2d(1024, 64, 1, bias=True)), nn.LeakyReLU(0.2, True)]
-        aff1_1 = [nn.Conv2d(64, 1, 1, bias=True)]
-        aff2_1 = [nn.Conv2d(64, 1, 1, bias=True)]
-        aff3_1 = [nn.Conv2d(64, 1, 1, bias=True)]
+        self.aff1_1 = [nn.Conv2d(64, 1, 1, bias=True)]
+        self.aff2_1 = [nn.Conv2d(64, 1, 1, bias=True)]
+        self.aff3_1 = [nn.Conv2d(64, 1, 1, bias=True)]
         
         en1_2 = [nn.ReflectionPad2d(4), nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True), nn.utils.spectral_norm(nn.Conv2d(256, 128, 1, bias=True)), nn.LeakyReLU(0.2, True)]		
         en2_2 = [nn.ReflectionPad2d(2), nn.Upsample(scale_factor=4, mode='bilinear', align_corners=True), nn.utils.spectral_norm(nn.Conv2d(512, 128, 1, bias=True)), nn.LeakyReLU(0.2, True)]
         en3_2 = [nn.ReflectionPad2d(1), nn.Upsample(scale_factor=8, mode='bilinear', align_corners=True), nn.utils.spectral_norm(nn.Conv2d(1024, 128, 1, bias=True)), nn.LeakyReLU(0.2, True)]
-        aff1_2 = [nn.Conv2d(128, 1, 1, bias=True)]
-        aff2_2 = [nn.Conv2d(128, 1, 1, bias=True)]
-        aff3_2 = [nn.Conv2d(128, 1, 1, bias=True)]
+        self.aff1_2 = [nn.Conv2d(128, 1, 1, bias=True)]
+        self.aff2_2 = [nn.Conv2d(128, 1, 1, bias=True)]
+        self.aff3_2 = [nn.Conv2d(128, 1, 1, bias=True)]
         
         en1_3 = [nn.ReflectionPad2d(4), nn.Upsample(scale_factor=1, mode='bilinear', align_corners=True), nn.utils.spectral_norm(nn.Conv2d(256, 256, 1, bias=True)), nn.LeakyReLU(0.2, True)]		
         en2_3 = [nn.ReflectionPad2d(2), nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True), nn.utils.spectral_norm(nn.Conv2d(512, 256, 1, bias=True)), nn.LeakyReLU(0.2, True)]
         en3_3 = [nn.ReflectionPad2d(1), nn.Upsample(scale_factor=4, mode='bilinear', align_corners=True), nn.utils.spectral_norm(nn.Conv2d(1024, 256, 1, bias=True)), nn.LeakyReLU(0.2, True)]
-        aff1_3 = [nn.Conv2d(256, 1, 1, bias=True)]
-        aff2_3 = [nn.Conv2d(256, 1, 1, bias=True)]
-        aff3_3 = [nn.Conv2d(256, 1, 1, bias=True)]
+        self.aff1_3 = [nn.Conv2d(256, 1, 1, bias=True)]
+        self.aff2_3 = [nn.Conv2d(256, 1, 1, bias=True)]
+        self.aff3_3 = [nn.Conv2d(256, 1, 1, bias=True)]
 		
         self.fc = nn.utils.spectral_norm(nn.Linear(ndf * 2, 1, bias=False))
         self.conv1x1 = nn.Conv2d(ndf * 2, ndf, kernel_size=1, stride=1, bias=True)
@@ -235,12 +235,16 @@ class Discriminator(nn.Module):
     def forward(self, input):
         #encoder:D2
         
-        resnet_pre = NewResnet(output_layers = [0,1,2,3,4,5,6,7,8,9])
-        res, layerout  = resnet_pre(input)
-        
-        x1_2 = self.en1_2(layerout('layer1'))
-        x2_2 = self.en2_2(layerout('layer2'))
-        x3_2 = self.en3_2(layerout('layer3'))
+        #resnet_pre = NewResnet(output_layers = [0,1,2,3,4,5,6,7,8,9])
+        #dev = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+        #resnet_pre.to(dev)
+        #res, layerout  = resnet_pre(input)
+
+        layer1out, layer2out, layer3out = pretrain_res(input)
+ 
+        x1_2 = self.en1_2(layer1out)
+        x2_2 = self.en2_2(layer2out)
+        x3_2 = self.en3_2(layer3out)
         
         x1_2 = x1_2*self.aff1_2(x1_2)
         x2_2 = x2_2*self.aff2_2(x2_2)
@@ -248,18 +252,18 @@ class Discriminator(nn.Module):
         x = x1_2 + x2_2 + x3_2
         
         #fution D1/D3
-        x1_1 = self.en1_1(layerout('layer1'))
-        x2_1 = self.en2_1(layerout('layer2'))
-        x3_1 = self.en3_1(layerout('layer3'))
+        x1_1 = self.en1_1(layer1out)
+        x2_1 = self.en2_1(layer2out)
+        x3_1 = self.en3_1(layer3out)
         
         x1_1 = x1_1*self.aff1_1(x1_1)
         x2_1 = x2_1*self.aff2_1(x2_1)
         x3_1 = x3_1*self.aff3_1(x3_1)
         D1_0 = x1_1 + x2_1 + x3_1
         
-        x1_3 = self.en1_3(layerout('layer1'))
-        x2_3 = self.en2_3(layerout('layer2'))
-        x3_3 = self.en3_3(layerout('layer3'))
+        x1_3 = self.en1_3(layer1out)
+        x2_3 = self.en2_3(layer2out)
+        x3_3 = self.en3_3(layer3out)
         
         x1_3 = x1_3*self.aff1_2(x1_3)
         x2_3 = x2_3*self.aff2_2(x2_3)
@@ -299,7 +303,7 @@ class NewResnet(nn.Module):
         #print(self.output_layers)
         self.selected_out = OrderedDict()
         #PRETRAINED MODEL
-        self.pretrained = models.resnet152(pretrained=True)
+        self.pretrained = models.resnet152(pretrained=True).cuda()
         #self.pretrained = pred
         self.fhooks = []
         
@@ -318,6 +322,17 @@ class NewResnet(nn.Module):
     def forward(self, x):
         out = self.pretrained(x)
         return self.selected_out
+
+def pretrain_res(x):
+        model = NewResnet(output_layers = [0,1,2,3,4,5,6,7,8,9])
+        dev = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+        model.to(dev)
+        layerout = model(x)
+        layer1out = layerout['layer1']
+        layer2out = layerout['layer2']
+        layer3out = layerout['layer3']
+
+        return layer1out, layer2out, layer3out
 
 
 class Generator(nn.Module):
