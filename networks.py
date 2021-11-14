@@ -236,7 +236,7 @@ class Discriminator(nn.Module):
         #encoder:D2
         
         resnet_pre = NewResnet(output_layers = [0,1,2,3,4,5,6,7,8,9])
-        res, layerout  = self.resnet_pre(input)
+        res, layerout  = resnet_pre(input)
         
         x1_2 = self.en1_2(layerout('layer1'))
         x2_2 = self.en2_2(layerout('layer2'))
