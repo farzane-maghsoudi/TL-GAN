@@ -159,23 +159,23 @@ class Discriminator(nn.Module):
         en1_1 = [nn.ReflectionPad2d(4), nn.Upsample(scale_factor=4, mode='bilinear', align_corners=True), nn.utils.spectral_norm(nn.Conv2d(256, 64, 1, bias=True)), nn.LeakyReLU(0.2, True)]		
         en2_1 = [nn.ReflectionPad2d(2), nn.Upsample(scale_factor=8, mode='bilinear', align_corners=True), nn.utils.spectral_norm(nn.Conv2d(512, 64, 1, bias=True)), nn.LeakyReLU(0.2, True)]
         en3_1 = [nn.ReflectionPad2d(1), nn.Upsample(scale_factor=16, mode='bilinear', align_corners=True), nn.utils.spectral_norm(nn.Conv2d(1024, 64, 1, bias=True)), nn.LeakyReLU(0.2, True)]
-        self.aff1_1 = [nn.Conv2d(64, 1, 1, bias=True)]
-        self.aff2_1 = [nn.Conv2d(64, 1, 1, bias=True)]
-        self.aff3_1 = [nn.Conv2d(64, 1, 1, bias=True)]
+        aff1_1 = [nn.Conv2d(64, 1, 1, bias=True)]
+        aff2_1 = [nn.Conv2d(64, 1, 1, bias=True)]
+        aff3_1 = [nn.Conv2d(64, 1, 1, bias=True)]
         
         en1_2 = [nn.ReflectionPad2d(4), nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True), nn.utils.spectral_norm(nn.Conv2d(256, 128, 1, bias=True)), nn.LeakyReLU(0.2, True)]		
         en2_2 = [nn.ReflectionPad2d(2), nn.Upsample(scale_factor=4, mode='bilinear', align_corners=True), nn.utils.spectral_norm(nn.Conv2d(512, 128, 1, bias=True)), nn.LeakyReLU(0.2, True)]
         en3_2 = [nn.ReflectionPad2d(1), nn.Upsample(scale_factor=8, mode='bilinear', align_corners=True), nn.utils.spectral_norm(nn.Conv2d(1024, 128, 1, bias=True)), nn.LeakyReLU(0.2, True)]
-        self.aff1_2 = [nn.Conv2d(128, 1, 1, bias=True)]
-        self.aff2_2 = [nn.Conv2d(128, 1, 1, bias=True)]
-        self.aff3_2 = [nn.Conv2d(128, 1, 1, bias=True)]
+        aff1_2 = [nn.Conv2d(128, 1, 1, bias=True)]
+        aff2_2 = [nn.Conv2d(128, 1, 1, bias=True)]
+        aff3_2 = [nn.Conv2d(128, 1, 1, bias=True)]
         
         en1_3 = [nn.ReflectionPad2d(4), nn.Upsample(scale_factor=1, mode='bilinear', align_corners=True), nn.utils.spectral_norm(nn.Conv2d(256, 256, 1, bias=True)), nn.LeakyReLU(0.2, True)]		
         en2_3 = [nn.ReflectionPad2d(2), nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True), nn.utils.spectral_norm(nn.Conv2d(512, 256, 1, bias=True)), nn.LeakyReLU(0.2, True)]
         en3_3 = [nn.ReflectionPad2d(1), nn.Upsample(scale_factor=4, mode='bilinear', align_corners=True), nn.utils.spectral_norm(nn.Conv2d(1024, 256, 1, bias=True)), nn.LeakyReLU(0.2, True)]
-        self.aff1_3 = [nn.Conv2d(256, 1, 1, bias=True)]
-        self.aff2_3 = [nn.Conv2d(256, 1, 1, bias=True)]
-        self.aff3_3 = [nn.Conv2d(256, 1, 1, bias=True)]
+        aff1_3 = [nn.Conv2d(256, 1, 1, bias=True)]
+        aff2_3 = [nn.Conv2d(256, 1, 1, bias=True)]
+        aff3_3 = [nn.Conv2d(256, 1, 1, bias=True)]
 		
         self.fc = nn.utils.spectral_norm(nn.Linear(ndf * 2, 1, bias=False))
         self.conv1x1 = nn.Conv2d(ndf * 2, ndf, kernel_size=1, stride=1, bias=True)
@@ -229,16 +229,17 @@ class Discriminator(nn.Module):
         self.en1_3 = nn.Sequential(*en1_3)
         self.en2_3 = nn.Sequential(*en2_3)
         self.en3_3 = nn.Sequential(*en3_3)
-        #self.resnet_pre = NewResnet(output_layers = [0,1,2,3,4,5,6,7,8,9])
-        
+        self.aff1_2 = nn.Sequential(*aff1_2)
+        self.aff2_2 = nn.Sequential(*aff2_2)
+        self.aff3_2 = nn.Sequential(*aff3_2)
+        self.aff1_1 = nn.Sequential(*aff1_1)
+        self.aff2_1 = nn.Sequential(*aff2_1)
+        self.aff3_1 = nn.Sequential(*aff3_1)
+        self.aff1_3 = nn.Sequential(*aff1_3)
+        self.aff2_3 = nn.Sequential(*aff2_3)
+        self.aff3_3 = nn.Sequential(*aff3_3)
 
     def forward(self, input):
-        #encoder:D2
-        
-        #resnet_pre = NewResnet(output_layers = [0,1,2,3,4,5,6,7,8,9])
-        #dev = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
-        #resnet_pre.to(dev)
-        #res, layerout  = resnet_pre(input)
 
         layer1out, layer2out, layer3out = pretrain_res(input)
  
@@ -246,7 +247,7 @@ class Discriminator(nn.Module):
         x2_2 = self.en2_2(layer2out)
         x3_2 = self.en3_2(layer3out)
         
-        x1_2 = x1_2*self.aff1_2(x1_2)
+        x1_2 = x1_2 * self.aff1_2(x1_2)
         x2_2 = x2_2*self.aff2_2(x2_2)
         x3_2 = x3_2*self.aff3_2(x3_2)
         x = x1_2 + x2_2 + x3_2
@@ -265,9 +266,9 @@ class Discriminator(nn.Module):
         x2_3 = self.en2_3(layer2out)
         x3_3 = self.en3_3(layer3out)
         
-        x1_3 = x1_3*self.aff1_2(x1_3)
-        x2_3 = x2_3*self.aff2_2(x2_3)
-        x3_3 = x3_3*self.aff3_2(x3_3)
+        x1_3 = x1_3*self.aff1_3(x1_3)
+        x2_3 = x2_3*self.aff2_3(x2_3)
+        x3_3 = x3_3*self.aff3_3(x3_3)
         D3_0 = x1_3 + x2_3 + x3_3
 		
         #x = self.model(input)
