@@ -217,7 +217,6 @@ class Discriminator(nn.Module):
 
 
 
-        #self.model = nn.Sequential(*model)
         self.Dis1_1 = nn.Sequential(*Dis1_1)
         self.Dis2_2 = nn.Sequential(*Dis2_2)
         self.Dis3_3 = nn.Sequential(*Dis3_3)
@@ -230,17 +229,18 @@ class Discriminator(nn.Module):
         self.en1_3 = nn.Sequential(*en1_3)
         self.en2_3 = nn.Sequential(*en2_3)
         self.en3_3 = nn.Sequential(*en3_3)
-        self.resnet_pre = NewResnet(output_layers = [0,1,2,3,4,5,6,7,8,9])
+        #self.resnet_pre = NewResnet(output_layers = [0,1,2,3,4,5,6,7,8,9])
         
 
     def forward(self, input):
         #encoder:D2
         
-        res_x = self.resnet_pre(input)
+        resnet_pre = NewResnet(output_layers = [0,1,2,3,4,5,6,7,8,9])
+        res, layerout  = self.resnet_pre(input)
         
-        x1_2 = self.en1_2(res_x('layer1'))
-        x2_2 = self.en2_2(res_x('layer2'))
-        x3_2 = self.en3_2(res_x('layer3'))
+        x1_2 = self.en1_2(layerout('layer1'))
+        x2_2 = self.en2_2(layerout('layer2'))
+        x3_2 = self.en3_2(layerout('layer3'))
         
         x1_2 = x1_2*self.aff1_2(x1_2)
         x2_2 = x2_2*self.aff2_2(x2_2)
@@ -248,18 +248,18 @@ class Discriminator(nn.Module):
         x = x1_2 + x2_2 + x3_2
         
         #fution D1/D3
-        x1_1 = self.en1_1(res_x('layer1'))
-        x2_1 = self.en2_1(res_x('layer2'))
-        x3_1 = self.en3_1(res_x('layer3'))
+        x1_1 = self.en1_1(layerout('layer1'))
+        x2_1 = self.en2_1(layerout('layer2'))
+        x3_1 = self.en3_1(layerout('layer3'))
         
         x1_1 = x1_1*self.aff1_1(x1_1)
         x2_1 = x2_1*self.aff2_1(x2_1)
         x3_1 = x3_1*self.aff3_1(x3_1)
         D1_0 = x1_1 + x2_1 + x3_1
         
-        x1_3 = self.en1_3(res_x('layer1'))
-        x2_3 = self.en2_3(res_x('layer2'))
-        x3_3 = self.en3_3(res_x('layer3'))
+        x1_3 = self.en1_3(layerout('layer1'))
+        x2_3 = self.en2_3(layerout('layer2'))
+        x3_3 = self.en3_3(layerout('layer3'))
         
         x1_3 = x1_3*self.aff1_2(x1_3)
         x2_3 = x2_3*self.aff2_2(x2_3)
@@ -318,6 +318,7 @@ class NewResnet(nn.Module):
     def forward(self, x):
         out = self.pretrained(x)
         return self.selected_out
+
 
 class Generator(nn.Module):
     def __init__(self, input_nc, output_nc, ngf=64, n_blocks=6, img_size=256, light=False):
