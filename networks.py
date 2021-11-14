@@ -3,6 +3,7 @@ import torch.nn as nn
 from torch.nn.parameter import Parameter
 from torchvision import models
 from block import fusions
+from collections import OrderedDict 
 
 class adaILN(nn.Module):
     def __init__(self, num_features, eps=1e-5, momentum=0.9, using_moving_average=True, using_bn=False):
@@ -216,7 +217,7 @@ class Discriminator(nn.Module):
 
 
 
-        self.model = nn.Sequential(*model)
+        #self.model = nn.Sequential(*model)
         self.Dis1_1 = nn.Sequential(*Dis1_1)
         self.Dis2_2 = nn.Sequential(*Dis2_2)
         self.Dis3_3 = nn.Sequential(*Dis3_3)
@@ -229,12 +230,13 @@ class Discriminator(nn.Module):
         self.en1_3 = nn.Sequential(*en1_3)
         self.en2_3 = nn.Sequential(*en2_3)
         self.en3_3 = nn.Sequential(*en3_3)
+        self.resnet_pre = NewResnet(output_layers = [0,1,2,3,4,5,6,7,8,9])
         
 
     def forward(self, input):
         #encoder:D2
         
-        res_x = resnet_pre(input)
+        res_x = self.resnet_pre(input)
         
         x1_2 = self.en1_2(res_x('layer1'))
         x2_2 = self.en2_2(res_x('layer2'))
@@ -460,10 +462,10 @@ class AttentionBlock(nn.Module):
 		
 class MultiSelfAttentionBlock(nn.Module):
     def __init__(self, dim = 256, featur= 64, n_channel = 8):
-        super(AttentionBlock, self).__init__()
-	      self.dim = dim
+        super(MultiSelfAttentionBlock, self).__init__()
+        self.dim = dim
         self.n_channel = n_channel
-	      self.featur = featur
+        self.featur = featur
         self.atten  = torch.nn.MultiheadAttention(dim, n_channel)
 		
 		
