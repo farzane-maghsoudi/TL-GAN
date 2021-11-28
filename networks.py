@@ -190,7 +190,7 @@ class Discriminator(nn.Module):
                           nn.Conv2d(mult*(2**i), mult*(2**(i+1)), kernel_size=3, stride=2, padding=0, bias=True)),
                           nn.LeakyReLU(0.2, True)]
         Dis1_1 += [nn.utils.spectral_norm(
-                          nn.Conv2d(32, 1, kernel_size=1, stride=1, padding=0, bias=True))]
+                          nn.Conv2d(512, 1, kernel_size=1, stride=1, padding=0, bias=True))]
                 
         
         mult = 128
@@ -201,7 +201,7 @@ class Discriminator(nn.Module):
                           nn.Conv2d(mult*(2**i), mult*(2**(i+1)), kernel_size=3, stride=2, padding=0, bias=True)),
                           nn.LeakyReLU(0.2, True)]
         Dis2_2 += [nn.utils.spectral_norm(
-                          nn.Conv2d(16, 1, kernel_size=1, stride=1, padding=0, bias=True))]
+                          nn.Conv2d(1024, 1, kernel_size=1, stride=1, padding=0, bias=True))]
                 
         
         mult = 256
@@ -212,7 +212,7 @@ class Discriminator(nn.Module):
                           nn.Conv2d(mult*(2**i), mult*(2**(i+1)), kernel_size=3, stride=2, padding=0, bias=True)),
                           nn.LeakyReLU(0.2, True)]
         Dis3_3 += [nn.utils.spectral_norm(
-                          nn.Conv2d(8, 1, kernel_size=1, stride=1, padding=0, bias=True))]
+                          nn.Conv2d(2048, 1, kernel_size=1, stride=1, padding=0, bias=True))]
                 
 
 
