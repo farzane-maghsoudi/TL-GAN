@@ -178,7 +178,7 @@ class Discriminator(nn.Module):
         aff3_3 = [nn.Conv2d(256, 1, 1, bias=True)]
 		
         self.fc = nn.utils.spectral_norm(nn.Linear(ndf * 4, 1, bias=False))
-        self.conv1x1 = nn.Conv2d(ndf * 2, ndf, kernel_size=1, stride=1, bias=True)
+        self.conv1x1 = nn.Conv2d(ndf * 4, ndf * 2, kernel_size=1, stride=1, bias=True)
         self.leaky_relu = nn.LeakyReLU(0.2, True)
         self.lamda = nn.Parameter(torch.zeros(1))
 		
