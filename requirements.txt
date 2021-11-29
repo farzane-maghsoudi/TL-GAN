@@ -5,4 +5,3 @@ torchvision
 TensorboardX
 tensorflow
 thop
-block.bootstrap.pytorch
