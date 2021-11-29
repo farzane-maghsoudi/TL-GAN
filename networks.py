@@ -380,24 +380,22 @@ class Generator(nn.Module):
                     nn.Conv2d(ngf * mult, ngf * mult, kernel_size=3, stride=1, padding=1, bias=True)]
     
         # Up-Sampling
-        UpBlock2_1 = [nn.ReflectionPad2d(1),   
+        UpBlock2_1 = [nn.Upsample(scale_factor=2), nn.ReflectionPad2d(1),   
                     nn.Conv2d(ngf * mult, int(ngf * mult / 2), kernel_size=3, stride=1, padding=0, bias=False),
-                    nn.PixelShuffle(2),
                     ILN(int(ngf * mult / 2)),
                     nn.ReLU(True),
-                    nn.Conv2d(int(ngf * mult / 2), int(ngf * mult / 4), kernel_size=3, stride=1, bias=True),
-                    nn.PixelShuffle(2),
-                    ILN(int(ngf * mult / 2)),
+                    nn.Upsample(scale_factor=2), nn.ReflectionPad2d(1),
+                    nn.Conv2d(int(ngf * mult / 2), int(ngf * mult / 4), kernel_size=3, stride=1, padding=1, bias=True),
+                    ILN(int(ngf * mult / 4)),
                     nn.ReLU(True)
                     ]
-        UpBlock2_2 = [nn.ReflectionPad2d(1),   
+        UpBlock2_2 = [nn.Upsample(scale_factor=2), nn.ReflectionPad2d(1),   
                     nn.Conv2d(ngf * mult, int(ngf * mult / 2), kernel_size=3, stride=1, padding=0, bias=False),
-                    nn.PixelShuffle(2),
                     ILN(int(ngf * mult / 2)),
                     nn.ReLU(True),
-                    nn.Conv2d(int(ngf * mult / 2), int(ngf * mult / 4), kernel_size=3, stride=1, bias=True),
-                    nn.PixelShuffle(2),
-                    ILN(int(ngf * mult / 2)),
+                    nn.Upsample(scale_factor=2), nn.ReflectionPad2d(1),
+                    nn.Conv2d(int(ngf * mult / 2), int(ngf * mult / 4), kernel_size=3, stride=1, padding=1, bias=True),
+                    ILN(int(ngf * mult / 4)),
                     nn.ReLU(True)
                     ]
 
