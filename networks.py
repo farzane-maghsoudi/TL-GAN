@@ -2,7 +2,6 @@ import torch
 import torch.nn as nn
 from torch.nn.parameter import Parameter
 from torchvision import models
-from block import fusions
 from collections import OrderedDict 
 
 class adaILN(nn.Module):
@@ -398,17 +397,21 @@ class Generator(nn.Module):
                     ILN(int(ngf * mult / 4)),
                     nn.ReLU(True)
                     ]
+	UpBlock2_3 = [nn.ReflectionPad2d(1),
+                    nn.Conv2d(int(ngf * mult / 4), int(ngf * mult / 4), kernel_size=3, stride=1, padding=0, bias=True),
+                    ILN(int(ngf * mult / 4)),
+                    nn.ReLU(True)]
 
         UpBlock3 = [nn.ReflectionPad2d(3),
                     nn.Conv2d(ngf, output_nc, kernel_size=7, stride=1, padding=0, bias=False),
                     nn.Tanh()]
                     
-        fusi = fusions.Block([ngf,ngf], ngf)
 
         self.UpBlock0 = nn.Sequential(*UpBlock0)
         self.UpBlock1 = nn.Sequential(*UpBlock1)
         self.UpBlock2_1 = nn.Sequential(*UpBlock2_1)
         self.UpBlock2_2 = nn.Sequential(*UpBlock2_2)
+	self.UpBlock2_3 = nn.Sequential(*UpBlock2_3)
         self.UpBlock3 = nn.Sequential(*UpBlock3)
 
     def forward(self, z):
@@ -430,8 +433,8 @@ class Generator(nn.Module):
         x = self.UpBlock1(x)
         x = x + y	
         
-        x_de = [self.UpBlock2_1(x), self.UpBlock2_2(x)]
-        x = fusi(x_de)
+        x = self.UpBlock2_1(x) + self.UpBlock2_2(x)
+        x = self.UpBlock2_3(x)
 
         out = self.UpBlock3(x)
 
