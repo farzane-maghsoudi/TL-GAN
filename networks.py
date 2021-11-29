@@ -385,7 +385,7 @@ class Generator(nn.Module):
                     ILN(int(ngf * mult / 2)),
                     nn.ReLU(True),
                     nn.Upsample(scale_factor=2), nn.ReflectionPad2d(1),
-                    nn.Conv2d(int(ngf * mult / 2), int(ngf * mult / 4), kernel_size=3, stride=1, padding=1, bias=True),
+                    nn.Conv2d(int(ngf * mult / 2), int(ngf * mult / 4), kernel_size=3, stride=1, bias=True),
                     ILN(int(ngf * mult / 4)),
                     nn.ReLU(True)
                     ]
@@ -394,7 +394,7 @@ class Generator(nn.Module):
                     ILN(int(ngf * mult / 2)),
                     nn.ReLU(True),
                     nn.Upsample(scale_factor=2), nn.ReflectionPad2d(1),
-                    nn.Conv2d(int(ngf * mult / 2), int(ngf * mult / 4), kernel_size=3, stride=1, padding=1, bias=True),
+                    nn.Conv2d(int(ngf * mult / 2), int(ngf * mult / 4), kernel_size=3, stride=1, bias=True),
                     ILN(int(ngf * mult / 4)),
                     nn.ReLU(True)
                     ]
