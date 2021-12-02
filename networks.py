@@ -397,7 +397,7 @@ class Generator(nn.Module):
                     ILN(int(ngf * mult / 4)),
                     nn.ReLU(True)
                     ]
-	UpBlock2_3 = [nn.ReflectionPad2d(1),
+        UpBlock2_3 = [nn.ReflectionPad2d(1),
                     nn.Conv2d(int(ngf * mult / 4), int(ngf * mult / 4), kernel_size=3, stride=1, padding=0, bias=True),
                     ILN(int(ngf * mult / 4)),
                     nn.ReLU(True)]
@@ -411,8 +411,9 @@ class Generator(nn.Module):
         self.UpBlock1 = nn.Sequential(*UpBlock1)
         self.UpBlock2_1 = nn.Sequential(*UpBlock2_1)
         self.UpBlock2_2 = nn.Sequential(*UpBlock2_2)
-	self.UpBlock2_3 = nn.Sequential(*UpBlock2_3)
+	      self.UpBlock2_3 = nn.Sequential(*UpBlock2_3)
         self.UpBlock3 = nn.Sequential(*UpBlock3)
+
 
     def forward(self, z):
         x = z
