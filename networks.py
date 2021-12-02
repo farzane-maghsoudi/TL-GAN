@@ -3,6 +3,7 @@ import torch.nn as nn
 from torch.nn.parameter import Parameter
 from torchvision import models
 from collections import OrderedDict 
+from utils import *
 
 class adaILN(nn.Module):
     def __init__(self, num_features, eps=1e-5, momentum=0.9, using_moving_average=True, using_bn=False):
@@ -240,7 +241,8 @@ class Discriminator(nn.Module):
 
     def forward(self, input):
 
-        layer1out, layer2out, layer3out = pretrain_res(input)
+        input = resize2d(input, (224,224))
+	layer1out, layer2out, layer3out = pretrain_res(input)
  
         x1_2 = self.en1_2(layer1out)
         x2_2 = self.en2_2(layer2out)
