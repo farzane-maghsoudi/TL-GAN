@@ -1,6 +1,9 @@
 from scipy import misc
 import os, cv2, torch
 import numpy as np
+import torch
+import torch.nn.functional as F
+from torch.autograd import Variable
 
 def load_test_data(image_path, size=256):
     img = misc.imread(image_path, mode='RGB')
@@ -40,6 +43,9 @@ def check_folder(log_dir):
 
 def str2bool(x):
     return x.lower() in ('true')
+
+def resize2d(img, size):
+    return (F.adaptive_avg_pool2d(Variable(img,volatile=True), size)).data
 
 def cam(x, size = 256):
     x = x - np.min(x)
