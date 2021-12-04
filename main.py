@@ -1,7 +1,6 @@
 from TL_GAN import TL_GAN
 import argparse
 from utils import *
-#from networks import NewResnet
 
 """parsing and configuration"""
 
@@ -12,7 +11,7 @@ def parse_args():
     parser.add_argument('--light', type=str2bool, default=False, help='[TL_GAN full version / TL_GAN light version]')
     parser.add_argument('--dataset', type=str, default='YOUR_DATASET_NAME', help='dataset_name')
 
-    parser.add_argument('--epoch', type=int, default=1, help='The number of epochs to run')
+    #parser.add_argument('--epoch', type=int, default=1, help='The number of epochs to run')
     parser.add_argument('--iteration', type=int, default=10, help='The number of training iterations')
     #parser.add_argument('--iteration', type=int, default=300000, help='The number of training iterations')
     parser.add_argument('--batch_size', type=int, default=1, help='The size of batch size')
@@ -76,9 +75,6 @@ def main():
 
     # build graph
     gan.build_model()
-    
-    # build pretraind resnet
-    #resnet_pre = NewResnet(output_layers = [0,1,2,3,4,5,6,7,8,9])
 
     if args.phase == 'train' :
         gan.train()
