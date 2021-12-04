@@ -242,7 +242,7 @@ class Discriminator(nn.Module):
     def forward(self, input):
 
         input = resize2d(input, (224,224))
-	layer1out, layer2out, layer3out = pretrain_res(input)
+        layer1out, layer2out, layer3out = pretrain_res(input)
  
         x1_2 = self.en1_2(layer1out)
         x2_2 = self.en2_2(layer2out)
@@ -413,7 +413,7 @@ class Generator(nn.Module):
         self.UpBlock1 = nn.Sequential(*UpBlock1)
         self.UpBlock2_1 = nn.Sequential(*UpBlock2_1)
         self.UpBlock2_2 = nn.Sequential(*UpBlock2_2)
-	      self.UpBlock2_3 = nn.Sequential(*UpBlock2_3)
+        self.UpBlock2_3 = nn.Sequential(*UpBlock2_3)
         self.UpBlock3 = nn.Sequential(*UpBlock3)
 
 
