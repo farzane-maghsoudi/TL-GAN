@@ -122,8 +122,8 @@ class TL_GAN(object) :
         self.disA = Discriminator(input_nc=self.img_ch, ndf=self.ch, n_layers=self.n_dis).to(self.device)
         self.disB = Discriminator(input_nc=self.img_ch, ndf=self.ch, n_layers=self.n_dis).to(self.device)
         
-        #print('-----------------------------------------------')
-        #input = torch.randn([1, self.img_ch, self.img_size, self.img_size]).to(self.device)
+        print('-----------------------------------------------')
+        input = torch.randn([1, self.img_ch, self.img_size, self.img_size]).to(self.device)
         #macs, params = profile(self.disA, inputs=(input, ))
         #macs, params = clever_format([macs*2, params*2], "%.3f")
         #print('[Network %s] Total number of parameters: ' % 'disA', params)
