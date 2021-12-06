@@ -160,22 +160,22 @@ class Discriminator(nn.Module):
         #en2_1 = [nn.Conv2d(512, 64, 1, bias=True), nn.ReflectionPad2d(2), nn.Upsample(scale_factor=8, mode='bilinear', align_corners=True)]
         #en3_1 = [nn.Conv2d(1024, 64, 1, bias=True), nn.ReflectionPad2d(1), nn.Upsample(scale_factor=16, mode='bilinear', align_corners=True)]
         aff1_1 = [nn.Conv2d(64, 1, 1, bias=True), nn.Softmax()]
-        #aff2_1 = [nn.Conv2d(64, 1, 1, bias=True)]
-        #aff3_1 = [nn.Conv2d(64, 1, 1, bias=True)]
+        #aff2_1 = [nn.Conv2d(64, 1, 1, bias=True), nn.Softmax()]
+        #aff3_1 = [nn.Conv2d(64, 1, 1, bias=True), nn.Softmax()]
         
         en1_2 = [nn.Conv2d(256, 128, 1, bias=True), nn.ReflectionPad2d(4), nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True)]		
         en2_2 = [nn.Conv2d(512, 128, 1, bias=True), nn.ReflectionPad2d(2), nn.Upsample(scale_factor=4, mode='bilinear', align_corners=True)]
         en3_2 = [nn.Conv2d(1024, 128, 1, bias=True), nn.ReflectionPad2d(1), nn.Upsample(scale_factor=8, mode='bilinear', align_corners=True)]
         aff1_2 = [nn.Conv2d(128, 1, 1, bias=True), nn.Softmax()]
-        aff2_2 = [nn.Conv2d(128, 1, 1, bias=True)]
-        aff3_2 = [nn.Conv2d(128, 1, 1, bias=True)]
+        aff2_2 = [nn.Conv2d(128, 1, 1, bias=True), nn.Softmax()]
+        aff3_2 = [nn.Conv2d(128, 1, 1, bias=True), nn.Softmax()]
         
         #en1_3 = [nn.Conv2d(256, 256, 1, bias=True), nn.ReflectionPad2d(4), nn.Upsample(scale_factor=1, mode='bilinear', align_corners=True)]		
         #en2_3 = [nn.Conv2d(512, 256, 1, bias=True), nn.ReflectionPad2d(2), nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True)]
         en3_3 = [nn.Conv2d(1024, 256, 1, bias=True), nn.ReflectionPad2d(1), nn.Upsample(scale_factor=4, mode='bilinear', align_corners=True)]
         #aff1_3 = [nn.Conv2d(256, 1, 1, bias=True), nn.Softmax()]
-        #aff2_3 = [nn.Conv2d(256, 1, 1, bias=True)]
-        aff3_3 = [nn.Conv2d(256, 1, 1, bias=True)]
+        #aff2_3 = [nn.Conv2d(256, 1, 1, bias=True), nn.Softmax()]
+        aff3_3 = [nn.Conv2d(256, 1, 1, bias=True), nn.Softmax()]
 		
         self.fc = nn.utils.spectral_norm(nn.Linear(ndf * 4, 1, bias=False))
         self.conv1x1 = nn.Conv2d(ndf * 4, ndf * 2, kernel_size=1, stride=1, bias=True)
