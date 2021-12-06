@@ -128,7 +128,7 @@ class TL_GAN(object) :
         print('[Network %s] Total number of parameters: ' % 'disA', params)
         print('[Network %s] Total number of FLOPs: ' % 'disA', macs)
         print('-----------------------------------------------')
-        _,_, _, real_A_ae = self.disA(input)
+        _,_,_,_, _, real_A_ae = self.disA(input)
         macs, params = profile(self.gen2B, inputs=(real_A_ae, ))
         macs, params = clever_format([macs*2, params*2], "%.3f")
         print('[Network %s] Total number of parameters: ' % 'gen2B', params)
@@ -220,13 +220,12 @@ class TL_GAN(object) :
 
 
             D_ad_loss_A1 = self.MSE_loss(real_logit_A1, torch.ones_like(real_logit_A1).to(self.device)) + self.MSE_loss(fake_logit_A1, torch.zeros_like(fake_logit_A1).to(self.device))
-			D_ad_loss_A2 = self.MSE_loss(real_logit_A2, torch.ones_like(real_logit_A2).to(self.device)) + self.MSE_loss(fake_logit_A2, torch.zeros_like(fake_logit_A2).to(self.device))
-			D_ad_loss_A3 = self.MSE_loss(real_logit_A3, torch.ones_like(real_logit_A3).to(self.device)) + self.MSE_loss(fake_logit_A3, torch.zeros_like(fake_logit_A3).to(self.device))
+            D_ad_loss_A2 = self.MSE_loss(real_logit_A2, torch.ones_like(real_logit_A2).to(self.device)) + self.MSE_loss(fake_logit_A2, torch.zeros_like(fake_logit_A2).to(self.device))
+            D_ad_loss_A3 = self.MSE_loss(real_logit_A3, torch.ones_like(real_logit_A3).to(self.device)) + self.MSE_loss(fake_logit_A3, torch.zeros_like(fake_logit_A3).to(self.device))
             #D_ad_loss_LA = self.MSE_loss(real_LA_logit, torch.ones_like(real_LA_logit).to(self.device)) + self.MSE_loss(fake_LA_logit, torch.zeros_like(fake_LA_logit).to(self.device))
-            
-			D_ad_loss_B1 = self.MSE_loss(real_logit_B1, torch.ones_like(real_logit_B1).to(self.device)) + self.MSE_loss(fake_logit_B1, torch.zeros_like(fake_logit_B1).to(self.device))
-			D_ad_loss_B2 = self.MSE_loss(real_logit_B2, torch.ones_like(real_logit_B2).to(self.device)) + self.MSE_loss(fake_logit_B2, torch.zeros_like(fake_logit_B2).to(self.device))
-			D_ad_loss_B3 = self.MSE_loss(real_logit_B3, torch.ones_like(real_logit_B3).to(self.device)) + self.MSE_loss(fake_logit_B3, torch.zeros_like(fake_logit_B3).to(self.device))
+            D_ad_loss_B1 = self.MSE_loss(real_logit_B1, torch.ones_like(real_logit_B1).to(self.device)) + self.MSE_loss(fake_logit_B1, torch.zeros_like(fake_logit_B1).to(self.device))
+            D_ad_loss_B2 = self.MSE_loss(real_logit_B2, torch.ones_like(real_logit_B2).to(self.device)) + self.MSE_loss(fake_logit_B2, torch.zeros_like(fake_logit_B2).to(self.device))
+            D_ad_loss_B3 = self.MSE_loss(real_logit_B3, torch.ones_like(real_logit_B3).to(self.device)) + self.MSE_loss(fake_logit_B3, torch.zeros_like(fake_logit_B3).to(self.device))
             #D_ad_loss_LB = self.MSE_loss(real_LB_logit, torch.ones_like(real_LB_logit).to(self.device)) + self.MSE_loss(fake_LB_logit, torch.zeros_like(fake_LB_logit).to(self.device))            
             D_ad_cam_loss_A = self.MSE_loss(real_A_cam_logit, torch.ones_like(real_A_cam_logit).to(self.device)) + self.MSE_loss(fake_A_cam_logit, torch.zeros_like(fake_A_cam_logit).to(self.device))
             D_ad_cam_loss_B = self.MSE_loss(real_B_cam_logit, torch.ones_like(real_B_cam_logit).to(self.device)) + self.MSE_loss(fake_B_cam_logit, torch.zeros_like(fake_B_cam_logit).to(self.device))
@@ -260,12 +259,12 @@ class TL_GAN(object) :
 
 
             G_ad_loss_A1 = self.MSE_loss(fake_logit_A1, torch.ones_like(fake_logit_A1).to(self.device))
-			G_ad_loss_A2 = self.MSE_loss(fake_logit_A2, torch.ones_like(fake_logit_A2).to(self.device))
-			G_ad_loss_A3 = self.MSE_loss(fake_logit_A3, torch.ones_like(fake_logit_A3).to(self.device))
+            G_ad_loss_A2 = self.MSE_loss(fake_logit_A2, torch.ones_like(fake_logit_A2).to(self.device))
+            G_ad_loss_A3 = self.MSE_loss(fake_logit_A3, torch.ones_like(fake_logit_A3).to(self.device))
             #G_ad_loss_LA = self.MSE_loss(fake_LA_logit, torch.ones_like(fake_LA_logit).to(self.device))
             G_ad_loss_B1 = self.MSE_loss(fake_logit_B1, torch.ones_like(fake_logit_B1).to(self.device))
-			G_ad_loss_B2 = self.MSE_loss(fake_logit_B2, torch.ones_like(fake_logit_B2).to(self.device))
-			G_ad_loss_B3 = self.MSE_loss(fake_logit_B3, torch.ones_like(fake_logit_B3).to(self.device))
+            G_ad_loss_B2 = self.MSE_loss(fake_logit_B2, torch.ones_like(fake_logit_B2).to(self.device))
+            G_ad_loss_B3 = self.MSE_loss(fake_logit_B3, torch.ones_like(fake_logit_B3).to(self.device))
             #G_ad_loss_LB = self.MSE_loss(fake_LB_logit, torch.ones_like(fake_LB_logit).to(self.device))
 
             G_ad_cam_loss_A = self.MSE_loss(fake_A_cam_logit, torch.ones_like(fake_A_cam_logit).to(self.device))
