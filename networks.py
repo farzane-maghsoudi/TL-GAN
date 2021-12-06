@@ -293,9 +293,12 @@ class Discriminator(nn.Module):
         heatmap = torch.sum(x, dim=1, keepdim=True)
 
         z = x
-        out = (torch.mean(self.Dis1_1(D1_0)) + torch.mean(self.Dis2_2(x)) + torch.mean(self.Dis3_3(D3_0)))/3 
-        
-        return out, cam_logit, heatmap, z
+        #out = (torch.mean(self.Dis1_1(D1_0)) + torch.mean(self.Dis2_2(x)) + torch.mean(self.Dis3_3(D3_0)))/3 
+	out1 = self.Dis1_1(D1_0)
+	out2 = self.Dis2_2(x)
+	out3 = self.Dis3_3(D3_0)
+	
+	return out1, out2, out3, cam_logit, heatmap, z
 
     
 class NewResnet(nn.Module):
