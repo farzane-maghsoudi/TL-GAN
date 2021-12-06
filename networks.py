@@ -157,11 +157,11 @@ class Discriminator(nn.Module):
         super(Discriminator, self).__init__()
 		
         en1_1 = [nn.Conv2d(256, 64, 1, bias=True), nn.ReflectionPad2d(4), nn.Upsample(scale_factor=4, mode='bilinear', align_corners=True)]		
-        en2_1 = [nn.Conv2d(512, 64, 1, bias=True), nn.ReflectionPad2d(2), nn.Upsample(scale_factor=8, mode='bilinear', align_corners=True)]
-        en3_1 = [nn.Conv2d(1024, 64, 1, bias=True), nn.ReflectionPad2d(1), nn.Upsample(scale_factor=16, mode='bilinear', align_corners=True)]
+        #en2_1 = [nn.Conv2d(512, 64, 1, bias=True), nn.ReflectionPad2d(2), nn.Upsample(scale_factor=8, mode='bilinear', align_corners=True)]
+        #en3_1 = [nn.Conv2d(1024, 64, 1, bias=True), nn.ReflectionPad2d(1), nn.Upsample(scale_factor=16, mode='bilinear', align_corners=True)]
         aff1_1 = [nn.Conv2d(64, 1, 1, bias=True), nn.Softmax()]
-        aff2_1 = [nn.Conv2d(64, 1, 1, bias=True)]
-        aff3_1 = [nn.Conv2d(64, 1, 1, bias=True)]
+        #aff2_1 = [nn.Conv2d(64, 1, 1, bias=True)]
+        #aff3_1 = [nn.Conv2d(64, 1, 1, bias=True)]
         
         en1_2 = [nn.Conv2d(256, 128, 1, bias=True), nn.ReflectionPad2d(4), nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True)]		
         en2_2 = [nn.Conv2d(512, 128, 1, bias=True), nn.ReflectionPad2d(2), nn.Upsample(scale_factor=4, mode='bilinear', align_corners=True)]
@@ -170,11 +170,11 @@ class Discriminator(nn.Module):
         aff2_2 = [nn.Conv2d(128, 1, 1, bias=True)]
         aff3_2 = [nn.Conv2d(128, 1, 1, bias=True)]
         
-        en1_3 = [nn.Conv2d(256, 256, 1, bias=True), nn.ReflectionPad2d(4), nn.Upsample(scale_factor=1, mode='bilinear', align_corners=True)]		
-        en2_3 = [nn.Conv2d(512, 256, 1, bias=True), nn.ReflectionPad2d(2), nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True)]
+        #en1_3 = [nn.Conv2d(256, 256, 1, bias=True), nn.ReflectionPad2d(4), nn.Upsample(scale_factor=1, mode='bilinear', align_corners=True)]		
+        #en2_3 = [nn.Conv2d(512, 256, 1, bias=True), nn.ReflectionPad2d(2), nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True)]
         en3_3 = [nn.Conv2d(1024, 256, 1, bias=True), nn.ReflectionPad2d(1), nn.Upsample(scale_factor=4, mode='bilinear', align_corners=True)]
-        aff1_3 = [nn.Conv2d(256, 1, 1, bias=True), nn.Softmax()]
-        aff2_3 = [nn.Conv2d(256, 1, 1, bias=True)]
+        #aff1_3 = [nn.Conv2d(256, 1, 1, bias=True), nn.Softmax()]
+        #aff2_3 = [nn.Conv2d(256, 1, 1, bias=True)]
         aff3_3 = [nn.Conv2d(256, 1, 1, bias=True)]
 		
         self.fc = nn.utils.spectral_norm(nn.Linear(ndf * 4, 1, bias=False))
@@ -221,22 +221,22 @@ class Discriminator(nn.Module):
         self.Dis2_2 = nn.Sequential(*Dis2_2)
         self.Dis3_3 = nn.Sequential(*Dis3_3)
         self.en1_1 = nn.Sequential(*en1_1)
-        self.en2_1 = nn.Sequential(*en2_1)
-        self.en3_1 = nn.Sequential(*en3_1)
+        #self.en2_1 = nn.Sequential(*en2_1)
+        #self.en3_1 = nn.Sequential(*en3_1)
         self.en1_2 = nn.Sequential(*en1_2)
         self.en2_2 = nn.Sequential(*en2_2)
         self.en3_2 = nn.Sequential(*en3_2)
-        self.en1_3 = nn.Sequential(*en1_3)
-        self.en2_3 = nn.Sequential(*en2_3)
+        #self.en1_3 = nn.Sequential(*en1_3)
+        #self.en2_3 = nn.Sequential(*en2_3)
         self.en3_3 = nn.Sequential(*en3_3)
         self.aff1_2 = nn.Sequential(*aff1_2)
         self.aff2_2 = nn.Sequential(*aff2_2)
         self.aff3_2 = nn.Sequential(*aff3_2)
         self.aff1_1 = nn.Sequential(*aff1_1)
-        self.aff2_1 = nn.Sequential(*aff2_1)
-        self.aff3_1 = nn.Sequential(*aff3_1)
-        self.aff1_3 = nn.Sequential(*aff1_3)
-        self.aff2_3 = nn.Sequential(*aff2_3)
+        #self.aff2_1 = nn.Sequential(*aff2_1)
+        #self.aff3_1 = nn.Sequential(*aff3_1)
+        #self.aff1_3 = nn.Sequential(*aff1_3)
+        #self.aff2_3 = nn.Sequential(*aff2_3)
         self.aff3_3 = nn.Sequential(*aff3_3)
 
     def forward(self, input):
@@ -255,22 +255,22 @@ class Discriminator(nn.Module):
         
         #fution D1/D3
         x1_1 = self.en1_1(layer1out)
-        x2_1 = self.en2_1(layer2out)
-        x3_1 = self.en3_1(layer3out)
+        #x2_1 = self.en2_1(layer2out)
+        #x3_1 = self.en3_1(layer3out)
         
-        x1_1 = x1_1*self.aff1_1(x1_1)
-        x2_1 = x2_1*self.aff2_1(x2_1)
-        x3_1 = x3_1*self.aff3_1(x3_1)
-        D1_0 = x1_1 + x2_1 + x3_1
+        D1_0 = x1_1*self.aff1_1(x1_1)
+        #x2_1 = x2_1*self.aff2_1(x2_1)
+        #x3_1 = x3_1*self.aff3_1(x3_1)
+        #D1_0 = x1_1 + x2_1 + x3_1
         
-        x1_3 = self.en1_3(layer1out)
-        x2_3 = self.en2_3(layer2out)
+        #x1_3 = self.en1_3(layer1out)
+        #x2_3 = self.en2_3(layer2out)
         x3_3 = self.en3_3(layer3out)
         
-        x1_3 = x1_3*self.aff1_3(x1_3)
-        x2_3 = x2_3*self.aff2_3(x2_3)
-        x3_3 = x3_3*self.aff3_3(x3_3)
-        D3_0 = x1_3 + x2_3 + x3_3
+        #x1_3 = x1_3*self.aff1_3(x1_3)
+        #x2_3 = x2_3*self.aff2_3(x2_3)
+        D3_0 = x3_3*self.aff3_3(x3_3)
+        #D3_0 = x1_3 + x2_3 + x3_3
 		
         #x = self.model(input)
 
