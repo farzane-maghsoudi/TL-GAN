@@ -206,8 +206,8 @@ class TL_GAN(object) :
             # Update D
             self.D_optim.zero_grad()
 
-            real_logit_A, real_A_cam_logit, _, real_A_z = self.disA(real_A)
-            real_logit_B, real_B_cam_logit, _, real_B_z = self.disB(real_B)
+            real_logit_A1, real_logit_A2, real_logit_A3, real_A_cam_logit, _, real_A_z = self.disA(real_A)
+            real_logit_B1, real_logit_B2, real_logit_B3, real_B_cam_logit, _, real_B_z = self.disB(real_B)
 
             fake_A2B = self.gen2B(real_A_z)
             fake_B2A = self.gen2A(real_B_z)
@@ -215,13 +215,18 @@ class TL_GAN(object) :
             fake_B2A = fake_B2A.detach()
             fake_A2B = fake_A2B.detach()
 
-            fake_logit_A, fake_A_cam_logit, _, fake_A_z = self.disA(fake_B2A)
-            fake_logit_B, fake_B_cam_logit, _, fake_B_z = self.disB(fake_A2B)
+            fake_logit_A1, fake_logit_A2, fake_logit_A3, fake_A_cam_logit, _, fake_A_z = self.disA(fake_B2A)
+            fake_logit_B1, fake_logit_B2, fake_logit_B3, fake_B_cam_logit, _, fake_B_z = self.disB(fake_A2B)
 
 
-            D_ad_loss_A = self.MSE_loss(real_logit_A, torch.ones_like(real_logit_A).to(self.device)) + self.MSE_loss(fake_logit_A, torch.zeros_like(fake_logit_A).to(self.device))
+            D_ad_loss_A1 = self.MSE_loss(real_logit_A1, torch.ones_like(real_logit_A1).to(self.device)) + self.MSE_loss(fake_logit_A1, torch.zeros_like(fake_logit_A1).to(self.device))
+			D_ad_loss_A2 = self.MSE_loss(real_logit_A2, torch.ones_like(real_logit_A2).to(self.device)) + self.MSE_loss(fake_logit_A2, torch.zeros_like(fake_logit_A2).to(self.device))
+			D_ad_loss_A3 = self.MSE_loss(real_logit_A3, torch.ones_like(real_logit_A3).to(self.device)) + self.MSE_loss(fake_logit_A3, torch.zeros_like(fake_logit_A3).to(self.device))
             #D_ad_loss_LA = self.MSE_loss(real_LA_logit, torch.ones_like(real_LA_logit).to(self.device)) + self.MSE_loss(fake_LA_logit, torch.zeros_like(fake_LA_logit).to(self.device))
-            D_ad_loss_B = self.MSE_loss(real_logit_B, torch.ones_like(real_logit_B).to(self.device)) + self.MSE_loss(fake_logit_B, torch.zeros_like(fake_logit_B).to(self.device))
+            
+			D_ad_loss_B1 = self.MSE_loss(real_logit_B1, torch.ones_like(real_logit_B1).to(self.device)) + self.MSE_loss(fake_logit_B1, torch.zeros_like(fake_logit_B1).to(self.device))
+			D_ad_loss_B2 = self.MSE_loss(real_logit_B2, torch.ones_like(real_logit_B2).to(self.device)) + self.MSE_loss(fake_logit_B2, torch.zeros_like(fake_logit_B2).to(self.device))
+			D_ad_loss_B3 = self.MSE_loss(real_logit_B3, torch.ones_like(real_logit_B3).to(self.device)) + self.MSE_loss(fake_logit_B3, torch.zeros_like(fake_logit_B3).to(self.device))
             #D_ad_loss_LB = self.MSE_loss(real_LB_logit, torch.ones_like(real_LB_logit).to(self.device)) + self.MSE_loss(fake_LB_logit, torch.zeros_like(fake_LB_logit).to(self.device))            
             D_ad_cam_loss_A = self.MSE_loss(real_A_cam_logit, torch.ones_like(real_A_cam_logit).to(self.device)) + self.MSE_loss(fake_A_cam_logit, torch.zeros_like(fake_A_cam_logit).to(self.device))
             D_ad_cam_loss_B = self.MSE_loss(real_B_cam_logit, torch.ones_like(real_B_cam_logit).to(self.device)) + self.MSE_loss(fake_B_cam_logit, torch.zeros_like(fake_B_cam_logit).to(self.device))
@@ -229,8 +234,8 @@ class TL_GAN(object) :
             D_feature_loss_A = self.L1_loss(real_A_z, fake_B_z)
             D_feature_loss_B = self.L1_loss(real_B_z, fake_A_z)
 			
-            D_loss_A = self.adv_weight * (D_ad_loss_A + D_ad_cam_loss_A) + self.feature_weight * D_feature_loss_A
-            D_loss_B = self.adv_weight * (D_ad_loss_B + D_ad_cam_loss_B) + self.feature_weight * D_feature_loss_B
+            D_loss_A = self.adv_weight * (D_ad_loss_A1 + D_ad_loss_A2 + D_ad_loss_A3 + D_ad_cam_loss_A) + self.feature_weight * D_feature_loss_A
+            D_loss_B = self.adv_weight * (D_ad_loss_B1 + D_ad_loss_B2 + D_ad_loss_B3 + D_ad_cam_loss_B) + self.feature_weight * D_feature_loss_B
 
             Discriminator_loss = D_loss_A + D_loss_B
             Discriminator_loss.backward()
@@ -241,22 +246,26 @@ class TL_GAN(object) :
             # Update G
             self.G_optim.zero_grad()
 
-            _,  _,  _, real_A_z = self.disA(real_A)
-            _,  _,  _, real_B_z = self.disB(real_B)
+            _,_,_,  _,  _, real_A_z = self.disA(real_A)
+            _,_,_,  _,  _, real_B_z = self.disB(real_B)
 
             fake_A2B = self.gen2B(real_A_z)
             fake_B2A = self.gen2A(real_B_z)
 
-            fake_logit_A, fake_A_cam_logit, _, fake_A_z = self.disA(fake_B2A)
-            fake_logit_B, fake_B_cam_logit, _, fake_B_z = self.disB(fake_A2B)
+            fake_logit_A1, fake_logit_A2, fake_logit_A3, fake_A_cam_logit, _, fake_A_z = self.disA(fake_B2A)
+            fake_logit_B1, fake_logit_B2, fake_logit_B3, fake_B_cam_logit, _, fake_B_z = self.disB(fake_A2B)
             
             fake_B2A2B = self.gen2B(fake_A_z)
             fake_A2B2A = self.gen2A(fake_B_z)
 
 
-            G_ad_loss_A = self.MSE_loss(fake_logit_A, torch.ones_like(fake_logit_A).to(self.device))
+            G_ad_loss_A1 = self.MSE_loss(fake_logit_A1, torch.ones_like(fake_logit_A1).to(self.device))
+			G_ad_loss_A2 = self.MSE_loss(fake_logit_A2, torch.ones_like(fake_logit_A2).to(self.device))
+			G_ad_loss_A3 = self.MSE_loss(fake_logit_A3, torch.ones_like(fake_logit_A3).to(self.device))
             #G_ad_loss_LA = self.MSE_loss(fake_LA_logit, torch.ones_like(fake_LA_logit).to(self.device))
-            G_ad_loss_B = self.MSE_loss(fake_logit_B, torch.ones_like(fake_logit_B).to(self.device))
+            G_ad_loss_B1 = self.MSE_loss(fake_logit_B1, torch.ones_like(fake_logit_B1).to(self.device))
+			G_ad_loss_B2 = self.MSE_loss(fake_logit_B2, torch.ones_like(fake_logit_B2).to(self.device))
+			G_ad_loss_B3 = self.MSE_loss(fake_logit_B3, torch.ones_like(fake_logit_B3).to(self.device))
             #G_ad_loss_LB = self.MSE_loss(fake_LB_logit, torch.ones_like(fake_LB_logit).to(self.device))
 
             G_ad_cam_loss_A = self.MSE_loss(fake_A_cam_logit, torch.ones_like(fake_A_cam_logit).to(self.device))
@@ -271,8 +280,8 @@ class TL_GAN(object) :
             G_recon_loss_A = self.L1_loss(fake_A2A, real_A)
             G_recon_loss_B = self.L1_loss(fake_B2B, real_B)		
 
-            G_loss_A = self.adv_weight * (G_ad_loss_A + G_ad_cam_loss_A) + self.cycle_weight * G_cycle_loss_A + self.recon_weight * G_recon_loss_A 
-            G_loss_B = self.adv_weight * (G_ad_loss_B + G_ad_cam_loss_B) + self.cycle_weight * G_cycle_loss_B + self.recon_weight * G_recon_loss_B 
+            G_loss_A = self.adv_weight * (G_ad_loss_A1 + G_ad_loss_A2 + G_ad_loss_A3 + G_ad_cam_loss_A) + self.cycle_weight * G_cycle_loss_A + self.recon_weight * G_recon_loss_A 
+            G_loss_B = self.adv_weight * (G_ad_loss_B1 + G_ad_loss_B2 + G_ad_loss_B3 + G_ad_cam_loss_B) + self.cycle_weight * G_cycle_loss_B + self.recon_weight * G_recon_loss_B 
 
             Generator_loss = G_loss_A + G_loss_B
             Generator_loss.backward()
@@ -328,14 +337,14 @@ class TL_GAN(object) :
                     real_A, real_B = real_A.to('cpu'), real_B.to('cpu')
                     # real_A, real_B = real_A.to(self.device), real_B.to(self.device)
                     
-                    _,  _, A_heatmap, real_A_z= self.disA(real_A)
-                    _,  _, B_heatmap, real_B_z= self.disB(real_B)
+                    _,_,_,  _, A_heatmap, real_A_z= self.disA(real_A)
+                    _,_,_,  _, B_heatmap, real_B_z= self.disB(real_B)
 
                     fake_A2B = self.gen2B(real_A_z)
                     fake_B2A = self.gen2A(real_B_z)
 
-                    _,  _,  _,  fake_A_z = self.disA(fake_B2A)
-                    _,  _,  _,  fake_B_z = self.disB(fake_A2B)
+                    _,_,_,  _,  _,  fake_A_z = self.disA(fake_B2A)
+                    _,_,_,  _,  _,  fake_B_z = self.disB(fake_A2B)
 
                     fake_B2A2B = self.gen2B(fake_A_z)
                     fake_A2B2A = self.gen2A(fake_B_z)
@@ -370,14 +379,14 @@ class TL_GAN(object) :
                     real_A, real_B = real_A.to('cpu'), real_B.to('cpu')
                     # real_A, real_B = real_A.to(self.device), real_B.to(self.device)
 
-                    _,  _, A_heatmap, real_A_z= self.disA(real_A)
-                    _,  _, B_heatmap, real_B_z= self.disB(real_B)
+                    _,_,_,  _, A_heatmap, real_A_z= self.disA(real_A)
+                    _,_,_,  _, B_heatmap, real_B_z= self.disB(real_B)
 
                     fake_A2B = self.gen2B(real_A_z)
                     fake_B2A = self.gen2A(real_B_z)
 
-                    _,  _,  _,  fake_A_z = self.disA(fake_B2A)
-                    _,  _,  _,  fake_B_z = self.disB(fake_A2B)
+                    _,_,_,  _,  _,  fake_A_z = self.disA(fake_B2A)
+                    _,_,_,  _,  _,  fake_B_z = self.disB(fake_A2B)
 
                     fake_B2A2B = self.gen2B(fake_A_z)
                     fake_A2B2A = self.gen2A(fake_B_z)
@@ -446,7 +455,7 @@ class TL_GAN(object) :
         self.gen2B.eval(), self.gen2A.eval(), self.disA.eval(),self.disB.eval()
         for n, (real_A, real_A_path) in enumerate(self.testA_loader):
             real_A = real_A.to(self.device)
-            _,  _, _, real_A_z= self.disA(real_A)
+            _,_,_,  _, _, real_A_z= self.disA(real_A)
             fake_A2B = self.gen2B(real_A_z)
 
             A2B = RGB2BGR(tensor2numpy(denorm(fake_A2B[0])))
@@ -455,7 +464,7 @@ class TL_GAN(object) :
 
         for n, (real_B, real_B_path) in enumerate(self.testB_loader):
             real_B = real_B.to(self.device)
-            _,  _, _, real_B_z= self.disB(real_B)
+            _,_,_,  _, _, real_B_z= self.disB(real_B)
             fake_B2A = self.gen2A(real_B_z)
 
             B2A = RGB2BGR(tensor2numpy(denorm(fake_B2A[0])))
