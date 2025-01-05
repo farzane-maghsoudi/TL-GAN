@@ -7,6 +7,7 @@ from utils import *
 from glob import glob
 from thop import profile
 from thop import clever_format
+from random import randint
 
 class TL_GAN(object) :
     def __init__(self, args):
